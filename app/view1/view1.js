@@ -19,7 +19,6 @@ angular.module('myApp.view1', ['ngRoute'])
   $scope.maskIntNum = '99999';
 
   $http.get('view1/series.json',{}).then(function (res) {
-
     $scope.initialStateSeries = res.data;
   });
 
@@ -39,6 +38,8 @@ angular.module('myApp.view1', ['ngRoute'])
     }
   });
 
+  $scope.id_series = ( !localStorage.getItem('id_series') ) ? undefined : localStorage.getItem('id_series');
+
   $scope.walls = [{},{},{},{}];
   $scope.popWall = function () {
     $scope.walls.pop();
@@ -55,10 +56,10 @@ angular.module('myApp.view1', ['ngRoute'])
 
 
 
-  $scope.gutter = 3;
+  $scope.gutter = ( !localStorage.getItem('gutter') ) ? 3 : localStorage.getItem('gutter');
 
-  $scope.florLayout = 'rectangular';
-  $scope.wallLayout = 'rectangular';
+  $scope.florLayout = ( !localStorage.getItem('florLayout') ) ? 'diagonal' : localStorage.getItem('florLayout');
+  $scope.wallLayout = ( !localStorage.getItem('wallLayout') ) ? 'diagonal' : localStorage.getItem('wallLayout');
 
 
   var myWindow = angular.element($window); // Name the variable whatever makes sense
@@ -98,18 +99,30 @@ angular.module('myApp.view1', ['ngRoute'])
     };
     var toStore = JSON.stringify(obj);
     localStorage.setItem('someKey', toStore);
+    localStorage.setItem('gutter', $scope.gutter);
+    localStorage.setItem('florLayout', $scope.florLayout);
+    localStorage.setItem('wallLayout', $scope.wallLayout);
+    localStorage.setItem('id_series', $scope.id_series);
+
   });
   $log.log(localStorage.getItem('someKey'));
-  var i = 0;
+
   // Когда текщяя вкладка перезагружаеться или переход на другую страницу или закритие вкладки
   window.onunload = function (e) {
     var obj = {
       "id_series": $scope.id_series
     };
+    $log.log(e);
     if($scope.wall) obj.wall = {};
     if($scope.flor) obj.flor = {};
     var toStore = JSON.stringify(obj);
     localStorage.setItem('someKey', toStore);
   }
+
+  //очистить хранилище
+  $scope.reset = function () {
+    localStorage.clear();
+    location.reload();
+  };
 
 }]);

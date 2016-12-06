@@ -111,29 +111,25 @@
                        <div flex="50">
                            <md-input-container>
                                <label for="heightWall">Высота стен</label>
-                               <input id="heightWall"  type="number" ng-model="wallHeight">
+                               <input id="heightWall"  type="number" ng-model="wallHeight" ng-required="wall">
                            </md-input-container>
                        </div>
-                        <div flex="50">
-                            <md-input-container>
-                                <label for="color">Высота стен</label>
-                                <input flex="100" id="color" type="color" ng-model="color">
-                            </md-input-container>
-                        </div>
                     </div>
                     <div layout="row" layout-wrap layout-padding flex="50">
                         <div flex="50" ng-repeat="wall in walls">
                             <md-input-container>
                                 <label for="widthWall">Ширина стены #{{$index + 1}}</label>
-                                <input id="widthWall" type="number" ng-model="wall.width" ng-bind="wall.id=$index;wall.color=color;wall.height=wallHeight;">
+                                <input id="widthWall" type="number" ng-model="wall.width" ng-bind="wall.id=$index;wall.height=wallHeight;" ng-required="wall">
                             </md-input-container>
                         </div>
                     </div>
+
                     <div layout="row" flex="50" layout-align="center center" layout-wrap>
                         <md-button class="md-fab md-mini" aria-label="удалить стену" ng-disabled="walls.length == 1" ng-click="popWall()"><i class="material-icons">remove_circle_outline</i></md-button>
                         <md-button class="md-fab md-mini md-primary" aria-label="добавить стену" ng-disabled="walls.length == 4" ng-click="pushWall()"><i class="material-icons">add_circle_outline</i></md-button>
                         <pre>{{ walls | json }}</pre>
                     </div>
+
                 </div>
 
                 <!--поля для размеров стены-->
@@ -144,13 +140,13 @@
                         <div>
                             <md-input-container>
                                 <label for="lengthFlor">Длинна пола</label>
-                                <input id="lengthFlor" type="number" ng-model="Flor.length">
+                                <input id="lengthFlor" type="number" ng-model="Flor.length" ng-required="flor">
                             </md-input-container>
                         </div>
                         <div>
                             <md-input-container>
                                 <label for="widthFlor">Ширина пола</label>
-                                <input id="widthFlor" type="number" ng-model="Flor.width">
+                                <input id="widthFlor" type="number" ng-model="Flor.width" ng-required="flor">
                             </md-input-container>
                         </div>
                     </div>
@@ -158,12 +154,14 @@
                 </div>
                 <!--поля для разморов пола-->
 
+                <div layout="row" flex="50" layout-align="start center" layout-wrap>
+                    <md-button ng-disabled="!stats.$valid" class="md-fab md-primary"><i class="material-icons">forward</i></md-button>
+                    <md-button ng-click="reset()" ng-disabled="!id_series != ''" class="md-fab"><i class="material-icons">replay</i></md-button>
+                </div>
+
         </md-content>
 
-            <md-content layout="row" layout-padding>
-                <md-button ng-disabled="true" class="md-raised md-primary">Далее</md-button>
-                <md-button ng-click="reset()" ng-disabled="!id_series != ''" class="md-raised md-primary">Далее</md-button>
-            </md-content>
+
 
         </div>
 
