@@ -1,1 +1,171 @@
-<p>This is the partial for view 1.</p>
+<div ng-controller="View1Ctrl" layout="column" layout-padding ng-cloak>
+    <!--<code>{{seriesData | json}}</code>-->
+    <md-toolbar class="round-top" md-scroll-shrink>
+        <div class="md-toolbar-tools">
+            <h3>
+                <span>Назначение и размеры</span>
+            </h3>
+        </div>
+    </md-toolbar>
+
+    <form name="stats" id="stats" novalidate>
+        <!--
+        <ul>
+            <li><code ng-show="stats.$pristine">Невзаимодейстоввал с формой</code></li>
+            <li><code ng-show="stats.$dirty">Взаимодейстовал</code></li>
+            <li><code ng-show="stats.$valid">Форма валидная</code></li>
+            <li><code ng-show="stats.$invalid">Форма инвалидная</code></li>
+        </ul>
+        <pre>
+        <code ng-show="stats.$error">ошибки: {{stats.$error | json}}</code>
+        </pre> -->
+
+
+        <md-content layout="row" layout-padding>
+
+            <md-input-container flex="33">
+                <label>Серия</label>
+                <md-select ng-model="id_series" aria-label="Серия" required>
+                    <md-option ng-repeat="val in initialStateSeries" ng-value="val.type_series">{{val.id_series}}</md-option>
+                </md-select>
+                {{initialStateSeries[id_series].type_series}}
+            </md-input-container>
+
+        </md-content>
+
+        <div ng-show="initialStateSeries[id_series].type_series !== undefined">
+            <md-content layout="row" layout-padding>
+
+            <div flex="33">
+                <fieldset class="standard">
+                    <legend>Назначение</legend>
+                    <div layout-wrap layout-gt-sm="row">
+                        <!--id_series == 'fw' || id_series == 'w'-->
+                        <div ng-show="initialStateSeries[id_series].type_series == 1 || initialStateSeries[id_series].type_series == 2" flex-gt-sm="50">
+                            <md-checkbox ng-model="wall" ng-disabled="!flor">
+                                {{wall}} Стена
+                            </md-checkbox>
+                        </div>
+
+                        <div ng-show="initialStateSeries[id_series].type_series == 0 || initialStateSeries[id_series].type_series == 2" flex-gt-sm="50">
+                            <md-checkbox ng-model="flor" ng-disabled="!wall">
+                                {{flor}} Пол
+                            </md-checkbox>
+                        </div>
+
+                    </div>
+                </fieldset>
+            </div><!--Назначение-->
+
+            <div flex="33">
+                <label>Ширина шва между плитками</label>
+                <md-select aria-label="Ширина шва между плитками"  ng-model="gutter" required>
+                    <md-option ng-repeat="size in [ 1, 1.5, 2, 2.5, 3, 3.5, 4]" ng-value="size">{{size}}мм</md-option>
+                </md-select>
+            </div><!--Ширина между плитками-->
+
+        </md-content>
+            <div>
+                Варианты розкладки
+            </div>
+            <md-content layout="row" layout-padding>
+
+                <div flex="50" ng-show="wall">
+                    <fieldset class="standard">
+                        <legend>Стена</legend>
+                        <md-radio-group layout-wrap layout-gt-sm="row" ng-model="wallLayout">
+                            <md-radio-button flex-gt-sm="50" value="rectangular" class="md-primary">
+                                <i class="material-icons">grid_on</i> Прямоугольная
+                            </md-radio-button>
+                            <md-radio-button flex-gt-sm="50" value="diagonal" class="md-primary">
+                                <i class="material-icons">grid_off</i> Диагональная
+                            </md-radio-button>
+                        </md-radio-group>
+                        {{wallLayout}}
+                    </fieldset>
+                </div><!--стена-->
+
+                <div flex="50" ng-show="flor">
+                    <fieldset class="standard">
+                        <legend>Пол</legend>
+                        <md-radio-group layout-wrap layout-gt-sm="row" ng-model="florLayout">
+                            <md-radio-button flex-gt-sm="50" value="rectangular" class="md-primary">
+                                <i class="material-icons">grid_on</i> Прямоугольная
+                            </md-radio-button>
+                            <md-radio-button flex-gt-sm="50" value="diagonal" class="md-primary">
+                                <i class="material-icons">grid_off</i> Диагональная
+                            </md-radio-button>
+                        </md-radio-group>
+                        {{florLayout}}
+                    </fieldset>
+                </div><!--пол-->
+
+            </md-content>
+            <div>Задайте розмеры</div>
+            <md-content layout="column" layout-padding>
+                <input type="hidden" name="intMask" ng-model="maskIntNum">
+                <!--поля для размеров стены-->
+                <div ng-show="wall">
+                    <div layout="row" layout-wrap layout-padding>
+                       <div flex="50">
+                           <md-input-container>
+                               <label for="heightWall">Высота стен</label>
+                               <input id="heightWall"  type="number" ng-model="wallHeight">
+                           </md-input-container>
+                       </div>
+                        <div flex="50">
+                            <md-input-container>
+                                <label for="color">Высота стен</label>
+                                <input flex="100" id="color" type="color" ng-model="color">
+                            </md-input-container>
+                        </div>
+                    </div>
+                    <div layout="row" layout-wrap layout-padding flex="50">
+                        <div flex="50" ng-repeat="wall in walls">
+                            <md-input-container>
+                                <label for="widthWall">Ширина стены #{{$index + 1}}</label>
+                                <input id="widthWall" type="number" ng-model="wall.width" ng-bind="wall.id=$index;wall.color=color;wall.height=wallHeight;">
+                            </md-input-container>
+                        </div>
+                    </div>
+                    <div layout="row" flex="50" layout-align="center center" layout-wrap>
+                        <md-button class="md-fab md-mini" aria-label="удалить стену" ng-disabled="walls.length == 1" ng-click="popWall()"><i class="material-icons">remove_circle_outline</i></md-button>
+                        <md-button class="md-fab md-mini md-primary" aria-label="добавить стену" ng-disabled="walls.length == 4" ng-click="pushWall()"><i class="material-icons">add_circle_outline</i></md-button>
+                        <pre>{{ walls | json }}</pre>
+                    </div>
+                </div>
+
+                <!--поля для размеров стены-->
+
+                <!--поля для разморов пола-->
+                <div ng-show="flor">
+                    <div layout="column" layout-wrap layout-padding flex="50">
+                        <div>
+                            <md-input-container>
+                                <label for="lengthFlor">Длинна пола</label>
+                                <input id="lengthFlor" type="number" ng-model="Flor.length">
+                            </md-input-container>
+                        </div>
+                        <div>
+                            <md-input-container>
+                                <label for="widthFlor">Ширина пола</label>
+                                <input id="widthFlor" type="number" ng-model="Flor.width">
+                            </md-input-container>
+                        </div>
+                    </div>
+                    {{ Flor | json }}
+                </div>
+                <!--поля для разморов пола-->
+
+        </md-content>
+
+            <md-content layout="row" layout-padding>
+                <md-button ng-disabled="true" class="md-raised md-primary">Далее</md-button>
+                <md-button ng-click="reset()" ng-disabled="!id_series != ''" class="md-raised md-primary">Далее</md-button>
+            </md-content>
+
+        </div>
+
+    </form><!--#stats-->
+
+</div>
