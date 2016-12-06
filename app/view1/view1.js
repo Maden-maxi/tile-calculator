@@ -56,8 +56,10 @@ angular.module('myApp.view1', ['ngRoute'])
 
 
   $scope.gutter = 3;
+
   $scope.florLayout = 'rectangular';
   $scope.wallLayout = 'rectangular';
+
 
   var myWindow = angular.element($window); // Name the variable whatever makes sense
   $log.log(myWindow);

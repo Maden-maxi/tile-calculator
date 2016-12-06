@@ -23,3 +23,12 @@
   content: "|";
   padding-right: 0.3em;
 }
+.material-icons{
+  vertical-align: middle;
+}
+.round-top{
+  border-radius: 3px 3px 0 0;
+}
+#stats{
+  background-color: #fff;
+}
