@@ -12,22 +12,24 @@ angular.module('myApp.view1', ['ngRoute'])
 
 .controller('View1Ctrl', [ '$scope', '$http', '$log', '$window', function($scope, $http, $log, $window) {
 
-  $scope.maskIntNum = '99999';
-
   $scope.regex = '^\\d+$'; // Validate numbers
 
   $http.get('view1/series.json').then(function (res) {
-
+    /**
+     * First init app
+     */
     if( !localStorage.getItem( 'series' ) ){
       $scope.series = res.data;
       $scope.gutter = 3;
-      //$scope.tiles.walls.fields = [{},{}];
+
       $scope.layout = {"walls": "rectangular", "flor": "rectangular"};
 
-      //$window.alert('localStorage Empty. Getting Default Values');
     } else {
+      /**
+       * if field touched and localStorage have series object
+       */
       $scope.series = JSON.parse( localStorage.getItem( 'series' ) );
-      //$window.alert('LocalStorage have some data');
+
       $log.log($scope.series, 25);
       $scope.id_series = $scope.series.id_series;
       $scope.tilesUse = {
@@ -46,7 +48,10 @@ angular.module('myApp.view1', ['ngRoute'])
     }
 
   });
-
+  /**
+   * Save State Form function. Trigger on some events
+   * @param event (string) event name what trigger this function
+   */
   $scope.saveSeriesState = function (event) {
 
     var series = {
@@ -86,26 +91,31 @@ angular.module('myApp.view1', ['ngRoute'])
   };
 
 
-
+  /**
+   * When click on next step button or some step button link on nav
+   */
   $scope.$on('$destroy', function () {
-    //$window.alert('Going to 2nd or 3rd step');
     $scope.saveSeriesState('destroy');
   });
 
-  // Когда текщяя вкладка перезагружаеться или переход на другую страницу или закритие вкладки
+  /**
+   * This event trigger saveSeriesState when page: [reload, close,]
+   * @param e (object) optional
+   */
   window.onunload = function (e) {
       if( localStorage.getItem('saveStateEvent') != 'restart' ) {
           $scope.saveSeriesState('onunload');
       } else {
         localStorage.clear();
-        //alert('restart app');
       }
 
   };
 
+  /**
+   * Watch on id_series changes
+   */
   $scope.$watch('id_series', function (newValue, oldValue, scope) {
-    //$log.log(newValue, oldValue, scope);
-    //$window.alert(newValue);
+
     var series = JSON.parse(localStorage.getItem('series')) || false;
     switch (newValue) {
       case 0:
@@ -138,13 +148,6 @@ angular.module('myApp.view1', ['ngRoute'])
         $scope.tilesUse = {"walls": false, "flor": true};
         break;
     }
-    /*$http.get('view1/series.json').then( function (res) {
-      $scope.initProps = res.data[newValue];
-      $log.log($scope.initProps);
-      // $scope.tilesUse = $scope.initProps.tilesUse;
-      //$scope.layout = $scope.initProps[newValue].layout;
-    });*/
-
 
   });
   /**
@@ -156,31 +159,5 @@ angular.module('myApp.view1', ['ngRoute'])
   $scope.pushWall = function () {
     $scope.tiles.walls.fields.push({});
   };
-
-  /*
-  window.onbeforeunload = function(e) {
-    console.log(e);
-    $scope.$apply(function (scope) {
-      $log.log(scope);
-    });
-    return "Данные не сохранены. Точно перейти?";
-  };
-  */
-  /**
-   * События при которых текущее состояние формы
-   */
-  //Когда форма удаляеться с DOM дерема
-  /*
-  $scope.twoStep = function ($event) {
-    $scope.saveSeriesState('nextStepEvent');
-  };
-  //очистить хранилище
-
-  $scope.clearForm = function () {
-    localStorage.clear();
-    localStorage.setItem('resetForm', true);
-  };*/
-
-  $log.log( localStorage.getItem('series') );
 
 }]);

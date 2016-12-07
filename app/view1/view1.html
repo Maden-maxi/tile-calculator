@@ -1,5 +1,5 @@
 <div ng-controller="View1Ctrl" layout="column" layout-padding ng-cloak>
-    <!--<code>{{seriesData | json}}</code>-->
+
     <md-toolbar class="round-top" md-scroll-shrink>
         <div class="md-toolbar-tools">
             <h3>
@@ -9,17 +9,6 @@
     </md-toolbar>
 
     <form name="stats" id="stats" novalidate>
-        <!--
-        <ul>
-            <li><code ng-show="stats.$pristine">Невзаимодейстоввал с формой</code></li>
-            <li><code ng-show="stats.$dirty">Взаимодейстовал</code></li>
-            <li><code ng-show="stats.$valid">Форма валидная</code></li>
-            <li><code ng-show="stats.$invalid">Форма инвалидная</code></li>
-        </ul>
-        <pre>
-        <code ng-show="stats.$error">ошибки: {{stats.$error | json}}</code>
-        </pre> -->
-
 
         <md-content layout="row" layout-padding>
 
@@ -28,7 +17,6 @@
                 <md-select ng-model="id_series" aria-label="Серия" required>
                     <md-option ng-repeat="val in ['Украина', 'Италия', 'Германия']" ng-value="$index">{{val}}</md-option>
                 </md-select>
-                {{ id_series }}
 
             </md-input-container>
 
@@ -39,18 +27,18 @@
 
             <div flex="33">
                 <fieldset class="standard">
-                    <legend>Назначение</legend> {{ tilesUse }}
+                    <legend>Назначение</legend>
                     <div layout-wrap layout-gt-sm="row">
-                        <!--id_series == 'fw' || id_series == 'w'-->
+
                         <div ng-show="id_series == 1 || id_series == 0" flex-gt-sm="50">
                             <md-checkbox ng-model="tilesUse.walls" ng-disabled="!tilesUse.flor">
-                                {{tilesUse.walls}} Стена
+                                 Стена
                             </md-checkbox>
                         </div>
 
                         <div ng-show="id_series == 2 || id_series == 0" flex-gt-sm="50">
                             <md-checkbox ng-model="tilesUse.flor" ng-disabled="!tilesUse.walls">
-                                {{tilesUse.flor}} Пол
+                                Пол
                             </md-checkbox>
                         </div>
 
@@ -83,7 +71,7 @@
                                 <i class="material-icons">grid_off</i> Диагональная
                             </md-radio-button>
                         </md-radio-group>
-                        {{layout.walls}}
+
                     </fieldset>
                 </div><!--стена-->
 
@@ -98,7 +86,6 @@
                                 <i class="material-icons">grid_off</i> Диагональная
                             </md-radio-button>
                         </md-radio-group>
-                        {{layout.flor}}
                     </fieldset>
                 </div><!--пол-->
 
@@ -118,11 +105,6 @@
                                    <input flex="100" type="number" min="0" max="100" name="heightWall"  ng-pattern="regex" ng-model="tiles.walls.height" ng-required="tilesUse.walls" aria-label="Wall height" aria-controls="wall-height-slider">
                                </md-input-container>
                            </md-slider-container>
-
-                           <!--<md-input-container>-->
-                               <!--<label for="heightWall">Высота стен</label>-->
-                               <!--<input id="heightWall" name="heightWall"  ng-pattern="regex" ng-model="tiles.walls.height" ng-required="tilesUse.walls">-->
-                           <!--</md-input-container>-->
                        </div>
                     </div>
                     <div layout="row" layout-wrap layout-padding flex="50">
@@ -138,12 +120,6 @@
                                 </md-input-container>
                             </md-slider-container>
 
-                            <!--<md-input-container>
-                                <label for="widthWall{{$index+1}}">Ширина стены #{{$index + 1}}</label>
-                                <input id="widthWall{{$index+1}}" name="widthWall"  type="number" ng-model="wall.width" ng-bind="wall.id=$index;wall.height=tiles.walls.height;" ng-required="tilesUse.walls">
-
-                            </md-input-container>
-                            -->
                         </div>
 
                     </div>
@@ -151,7 +127,7 @@
                     <div layout="row" flex="50" layout-align="center center" layout-wrap>
                         <md-button class="md-fab md-mini" aria-label="удалить стену" ng-disabled="tiles.walls.fields.length == 1" ng-click="popWall()"><i class="material-icons">remove_circle_outline</i></md-button>
                         <md-button class="md-fab md-mini md-primary" aria-label="добавить стену" ng-disabled="tiles.walls.fields.length == 4" ng-click="pushWall()"><i class="material-icons">add_circle_outline</i></md-button>
-                        <pre>{{ tiles.walls.fields | json }}</pre>
+
                     </div>
 
                 </div>
@@ -183,14 +159,9 @@
                                 </md-input-container>
                             </md-slider-container>
 
-                            <!--<md-input-container>
-                                <label for="widthFlor">Ширина пола</label>
-                                <input id="widthFlor" name="widthFlor" ng-pattern="regex" ng-model="tiles.flor.width" ng-required="tilesUse.flor">
-                            </md-input-container>
-                            -->
                         </div>
                     </div>
-                    {{ tiles.flor | json }}
+
                 </div>
                 <!--поля для разморов пола-->
 
@@ -200,8 +171,6 @@
                 </div>
 
         </md-content>
-
-
 
         </div>
 
