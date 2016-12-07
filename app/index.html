@@ -21,9 +21,9 @@
     <li><md-button ng-click="restart()" class="md-fab"><i class="material-icons">replay</i></md-button></li>
     <!--<li ng-repeat="link in links"><a ng-class="currentLocation == link ? 'current-step' : ''" href="#!{{link}}">{{link}}</a></li>-->
 
-    <li><a href="#!/view1">view1</a></li>
-    <li><a href="#!/view2">view2</a></li>
-    <li><a href="#!/view3">view3</a></li>
+    <li><a ng-class="getClass('/view1')" href="#!/view1">view1</a></li>
+    <li><a ng-class="getClass('/view2')" href="#!/view2">view2</a></li>
+    <li><a ng-class="getClass('/view3')" href="#!/view3">view3</a></li>
 
   </ul>
 

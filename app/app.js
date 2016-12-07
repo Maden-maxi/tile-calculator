@@ -18,11 +18,16 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
 }])
     .controller('navCtrl', ['$scope', '$location', '$window', function ($scope, $location, $window) {
       $scope.currentLocation = $location.path();
-      $window.alert($scope.currentLocation);
+      //$window.alert($scope.currentLocation);
       $scope.restart = function () {
         localStorage.clear();
         localStorage.setItem('saveStateEvent', 'restart');
         location.assign('/');
       };
+
+        $scope.getClass = function (path) {
+            return ($location.path().substr(0, path.length) === path) ? 'current-step' : '';
+        }
+
       // $scope.links = ['/view1', '/view2', '/view3'];
     }]);
