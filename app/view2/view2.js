@@ -10,5 +10,5 @@ angular.module('myApp.view2', ['ngRoute'])
 }])
 
 .controller('View2Ctrl', [ '$scope', function($scope) {
-  $scope.stats = JSON.parse(localStorage.getItem('someKey'));
+  $scope.stats = JSON.parse(localStorage.getItem('series'));
 }]);
