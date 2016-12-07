@@ -24,10 +24,10 @@ angular.module('myApp.view1', ['ngRoute'])
       //$scope.tiles.walls.fields = [{},{}];
       $scope.layout = {"walls": "rectangular", "flor": "rectangular"};
 
-      $window.alert('if');
+      $window.alert('localStorage Empty. Getting Default Values');
     } else {
       $scope.series = JSON.parse( localStorage.getItem( 'series' ) );
-      $window.alert('else');
+      $window.alert('LocalStorage have some data');
       $log.log($scope.series, 25);
       $scope.id_series = $scope.series.id_series;
       $scope.tilesUse = {
@@ -88,17 +88,17 @@ angular.module('myApp.view1', ['ngRoute'])
 
 
   $scope.$on('$destroy', function () {
-    $window.alert('destroy');
+    $window.alert('Going to 2nd or 3rd step');
     $scope.saveSeriesState('destroy');
   });
 
   // Когда текщяя вкладка перезагружаеться или переход на другую страницу или закритие вкладки
-  /*window.onunload = function (e) {
-      $scope.saveSeriesState('onunload');
-  };*/
-
-  //$scope.id_series = ( !localStorage.getItem('id_series') ) ? undefined : localStorage.getItem('id_series');
-
+  window.onunload = function (e) {
+      if( localStorage.getItem('saveStateEvent') != 'restart' ) {
+          $scope.saveSeriesState('onunload');
+      }
+      alert('restart app');
+  };
 
   $scope.$watch('id_series', function (newValue, oldValue, scope) {
     //$log.log(newValue, oldValue, scope);
@@ -168,16 +168,13 @@ angular.module('myApp.view1', ['ngRoute'])
 
   $scope.twoStep = function ($event) {
     $scope.saveSeriesState('nextStepEvent');
-
   };
   //очистить хранилище
+  /*
   $scope.clearForm = function () {
     localStorage.clear();
     localStorage.setItem('resetForm', true);
-    //location.assign('/');
-    // stats.reset();
-    // location.reload();
-  };
+  };*/
 
   $log.log( localStorage.getItem('series') );
 

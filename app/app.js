@@ -12,6 +12,17 @@ angular.module('myApp', [
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
+  // $locationProvider.html5Mode(true).hashPrefix('!');
 
   $routeProvider.otherwise({redirectTo: '/view1'});
-}]);
+}])
+    .controller('navCtrl', ['$scope', '$location', '$window', function ($scope, $location, $window) {
+      $scope.currentLocation = $location.path();
+      $window.alert($scope.currentLocation);
+      $scope.restart = function () {
+        localStorage.clear();
+        localStorage.setItem('saveStateEvent', 'restart');
+        location.assign('/');
+      };
+      // $scope.links = ['/view1', '/view2', '/view3'];
+    }]);

@@ -110,20 +110,40 @@
                 <div ng-show="tilesUse.walls">
                     <div layout="row" layout-wrap layout-padding>
                        <div flex="50">
-                           <md-input-container>
-                               <label for="heightWall">Высота стен</label>
-                               <input id="heightWall" name="heightWall"  ng-pattern="regex" ng-model="tiles.walls.height" ng-required="tilesUse.walls">
-                               <validate-number val="stats.heightWall"></validate-number>
-                           </md-input-container>
+                           <md-slider-container>
+                               <span>Высота стен</span>
+                               <md-slider flex="50" min="0" max="100" ng-model="tiles.walls.height" aria-label="Wall height" id="wall-height-slider">
+                               </md-slider>
+                               <md-input-container flex="50">
+                                   <input flex="100" type="number" min="0" max="100" name="heightWall"  ng-pattern="regex" ng-model="tiles.walls.height" ng-required="tilesUse.walls" aria-label="Wall height" aria-controls="wall-height-slider">
+                               </md-input-container>
+                           </md-slider-container>
+
+                           <!--<md-input-container>-->
+                               <!--<label for="heightWall">Высота стен</label>-->
+                               <!--<input id="heightWall" name="heightWall"  ng-pattern="regex" ng-model="tiles.walls.height" ng-required="tilesUse.walls">-->
+                           <!--</md-input-container>-->
                        </div>
                     </div>
                     <div layout="row" layout-wrap layout-padding flex="50">
                         <div flex="50" ng-repeat="wall in tiles.walls.fields">
-                            <md-input-container>
+
+                            <md-slider-container>
+                                <span>Ширина стены #{{$index + 1}}</span>
+                                <md-slider flex="50" min="0" max="100" ng-model="wall.width" aria-label="Width Wall#{{$index+1}}" id="widthWall{{$index+1}}">
+                                </md-slider>
+                                <md-input-container flex="50">
+                                    <input flex="100" type="number" min="0" max="100" ng-model="wall.width" ng-bind="wall.id=$index;wall.height=tiles.walls.height;" name="widthWall"  ng-pattern="regex" ng-required="tilesUse.walls" aria-label="Width Wall#{{$index+1}}" aria-controls="width-wall#{{$index+1}}-slider">
+
+                                </md-input-container>
+                            </md-slider-container>
+
+                            <!--<md-input-container>
                                 <label for="widthWall{{$index+1}}">Ширина стены #{{$index + 1}}</label>
                                 <input id="widthWall{{$index+1}}" name="widthWall"  type="number" ng-model="wall.width" ng-bind="wall.id=$index;wall.height=tiles.walls.height;" ng-required="tilesUse.walls">
 
                             </md-input-container>
+                            -->
                         </div>
 
                     </div>
@@ -142,18 +162,32 @@
                 <div ng-show="tilesUse.flor">
                     <div layout="column" layout-wrap layout-padding flex="50">
                         <div>
-                            <md-input-container>
-                                <label for="lengthFlor">Длинна пола</label>
-                                <input id="lengthFlor" name="lengthFlor" ng-pattern="regex" ng-model="tiles.flor.height" ng-required="tilesUse.flor">
 
-                            </md-input-container>
+                            <md-slider-container>
+                                <span>Длинна пола</span>
+                                <md-slider flex="50" min="0" max="100" ng-model="tiles.flor.height" aria-label="Flor length" id="flor-length-slider">
+                                </md-slider>
+                                <md-input-container flex="50">
+                                    <input flex="100" type="number" min="0" max="100" name="lengthFlor"  ng-pattern="regex" ng-model="tiles.flor.height" ng-required="tilesUse.flor" aria-label="Flor length" aria-controls="flor-length-slider">
+                                </md-input-container>
+                            </md-slider-container>
+
                         </div>
                         <div>
-                            <md-input-container>
+                            <md-slider-container>
+                                <span>Ширина пола</span>
+                                <md-slider flex="50" min="0" max="100" ng-model="tiles.flor.width" aria-label="Flor width" id="flor-width-slider">
+                                </md-slider>
+                                <md-input-container flex="50">
+                                    <input flex="100" type="number" min="0" max="100" name="widthFlor"  ng-pattern="regex" ng-model="tiles.flor.width" ng-required="tilesUse.flor" aria-label="Flor length" aria-controls="flor-width-slider">
+                                </md-input-container>
+                            </md-slider-container>
+
+                            <!--<md-input-container>
                                 <label for="widthFlor">Ширина пола</label>
                                 <input id="widthFlor" name="widthFlor" ng-pattern="regex" ng-model="tiles.flor.width" ng-required="tilesUse.flor">
-
                             </md-input-container>
+                            -->
                         </div>
                     </div>
                     {{ tiles.flor | json }}
@@ -161,8 +195,8 @@
                 <!--поля для разморов пола-->
 
                 <div layout="row" flex="50" layout-align="start center" layout-wrap>
-                    <md-button ng-click="twoStep($event)" ng-disabled="!stats.$valid" class="md-fab md-primary"><a ng-readonly="!stats.$valid" id="nextStep" href="#!/view2"><i class="material-icons">forward</i></a></md-button>
-                    <md-button ng-click="clearForm()" class="md-fab"><i class="material-icons">replay</i></md-button>
+                    <div ng-show="!stats.$valid">Заполните все обезательные поля чтобы кнопка сделущего шага открылась</div>
+                    <md-button ng-disabled="!stats.$valid" class="md-fab md-primary"><a ng-hide="!stats.$valid" id="nextStep" href="#!/view2"><i class="material-icons">forward</i></a></md-button>
                 </div>
 
         </md-content>

@@ -32,3 +32,7 @@
 #stats{
   background-color: #fff;
 }
+.current-step{
+  color: red;
+  font-weight: bold;
+}
