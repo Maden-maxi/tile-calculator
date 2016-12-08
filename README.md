@@ -1,3 +1,11 @@
+# Brief Installation instruction
+```
+git clone https://github.com/Maden-maxi/tile-calculator.git
+cd tile-calculator
+npm install
+npm start
+```
+
 # `angular-seed` — the seed for AngularJS apps
 
 This project is an application skeleton for a typical [AngularJS][angularjs] web app. You can use it
