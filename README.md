@@ -5,6 +5,7 @@ cd tile-calculator
 npm install
 npm start
 ```
+Now browse to the app at [`localhost:8000`][local-app-url].
 
 # `angular-seed` — the seed for AngularJS apps
 
