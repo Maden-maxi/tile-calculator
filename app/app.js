@@ -22,7 +22,7 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
       $scope.restart = function () {
         localStorage.clear();
         localStorage.setItem('saveStateEvent', 'restart');
-        location.assign('/');
+        location.assign('/view1');
       };
 
         $scope.getClass = function (path) {
