@@ -33,7 +33,7 @@ angular.module('myApp.view1', ['ui.router'])
     };
     $scope.tiles = {
       "walls": obj.tiles.walls || {"height": "", "fields": [{},{}]},
-      "flor": obj.tiles.flor
+      "flor": obj.tiles.flor || {}
     };
   };
   /**
@@ -46,9 +46,10 @@ angular.module('myApp.view1', ['ui.router'])
       "id_series": $scope.id_series,
       "tilesUse": $scope.tilesUse,
       "gutter": $scope.gutter,
-      "layout": $scope.layout
+      "layout": $scope.layout,
+      "tiles": {}
     };
-    series.tiles = {};
+    //series.tiles = {};
     switch (series.id_series) {
       case 0:
 
@@ -70,7 +71,8 @@ angular.module('myApp.view1', ['ui.router'])
         break;
       case 2:
         series.tiles = {
-          "flor": $scope.tiles.flor
+          "flor": $scope.tiles.flor,
+          "walls": ""
         };
     }
 
@@ -84,9 +86,7 @@ angular.module('myApp.view1', ['ui.router'])
     if( !localStorage.getItem( 'series' ) && angular.isUndefined( $scope.id_series ) ){
       $scope.series = Series.get();
       $scope.gutter = 3;
-
       $scope.layout = {"walls": "rectangular", "flor": "rectangular"};
-
     } else {
       /**
        * if field touched and localStorage have series object
@@ -113,7 +113,7 @@ angular.module('myApp.view1', ['ui.router'])
     if( !angular.isUndefined( $scope.id_series ) && localStorage.getItem('saveStateEvent') != 'restart' ){
       $scope.saveSeriesState('unload');
     } else {
-      $scope.id_series = null;
+      $scope.id_series = undefined;
       localStorage.clear();
     }
   };
@@ -126,11 +126,16 @@ angular.module('myApp.view1', ['ui.router'])
     var series = JSON.parse(localStorage.getItem('series')) || false;
     switch (newValue) {
       case 0:
-        $scope.tilesUse = {"walls": true, "flor": true};
+
+        $scope.tilesUse = series.tilesUse || {"walls": true, "flor": true};
         $log.log(series);
         if(series) {
           if(series.tiles.walls.fields) {
-            $scope.tiles.walls.fields = series.tiles.walls.fields;
+            $scope.tiles.walls.fields = series.tiles.walls.fields || [{},{}];
+          } else {
+            $scope.tiles = {};
+            $scope.tiles.walls = {};
+            $scope.tiles.walls.fields = [{},{}];
           }
         } else {
           $scope.tiles = {};
@@ -144,6 +149,10 @@ angular.module('myApp.view1', ['ui.router'])
         if (series) {
           if( series.tiles.walls.fields ) {
             $scope.tiles.walls.fields = series.tiles.walls.fields;
+          } else {
+            $scope.tiles = {};
+            $scope.tiles.walls = {};
+            $scope.tiles.walls.fields = [{},{}];
           }
         } else {
           $scope.tiles = {};
@@ -153,8 +162,15 @@ angular.module('myApp.view1', ['ui.router'])
         break;
       case 2:
         $log.log(series);
+          if(series){
+            if( series.tiles.flor ) {
+              $scope.tiles.flor = series.tiles.flor;
+            }
+          } else {
+            $scope.tiles = {};
+            $scope.tiles.flor = {};
+          }
         $scope.tilesUse = {"walls": false, "flor": true};
-        $scope.tiles = {};
         break;
     }
 
@@ -162,9 +178,6 @@ angular.module('myApp.view1', ['ui.router'])
   /**
    * Adding walls fields
    */
-  $scope.$on('restart', function (event, data) {
-    $log.log(event, data);
-  });
   $scope.popWall = function () {
     $scope.tiles.walls.fields.pop();
   };

@@ -4,6 +4,7 @@
 <!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
 <head>
+  <base href="/">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title ng-bind="">My AngularJS App</title>
@@ -16,38 +17,44 @@
   <link rel="stylesheet" href="app.css">
   <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
-<body>
+<body ng-cloak>
+
   <ul class="menu" ng-controller="navCtrl">
+
     <li><md-button ng-click="restart()" class="md-fab"><i class="material-icons">replay</i></md-button></li>
     <!--<li ng-repeat="link in links"><a ng-class="currentLocation == link ? 'current-step' : ''" href="#!{{link}}">{{link}}</a></li>-->
+    <li ng-repeat="link in links"><a ui-sref="{{link.url}}" ui-sref-active="current-step">{{link.name}}</a></li>
 
-    <li><a ng-class="getClass('/view1')" href="#!/view1">view1</a></li>
-    <li><a ng-class="getClass('/view2')" href="#!/view2">view2</a></li>
-    <li><a ng-class="getClass('/view3')" href="#!/view3">view3</a></li>
+      <!--
+    <li><a ui-sref="step1" ui-sref-active="current-step">view1</a></li>
+    <li><a ui-sref="step2" ui-sref-active="current-step">view2</a></li>
+    <li><a ui-sref="step3" ui-sref-active="current-step">view3</a></li>-->
 
   </ul>
-
+  <pre>{{ $state | json }}</pre>
   <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <div ng-view></div>
-
+  <!--<div ng-view></div>-->
+    <ui-view></ui-view>
   <div>Angular seed app: v<span app-version></span></div>
 
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
   <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
+  <!--<script src="bower_components/angular-route/angular-route.js"></script>-->
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-aria/angular-aria.js"></script>
   <script src="bower_components/angular-material/angular-material.js"></script>
   <script src="bower_components/angular-messages/angular-messages.js"></script>
   <script src="bower_components/angular-ui-mask/dist/mask.js"></script>
   <script src="app.js"></script>
-  <script src="view1/view1.js"></script>
-  <script src="view2/view2.js"></script>
+  <script src="services/series.js"></script>
+  <script src="controllers/step1.js"></script>
+  <script src="controllers/step2.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>

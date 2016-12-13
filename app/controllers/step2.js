@@ -6,7 +6,7 @@ angular.module('myApp.view2', ['ui.router'])
   $stateProvider.state({
     name: 'step2',
     url: '/step2',
-    templateUrl: 'views/step2.html',
+    templateUrl: 'view2/view2.html',
     controller: 'View2Ctrl'
   });
   /*
