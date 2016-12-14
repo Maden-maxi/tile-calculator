@@ -34,5 +34,6 @@
 }
 .current-step{
   color: red;
+  background-color: peru;
   font-weight: bold;
 }

@@ -1,8 +1,40 @@
-<p>This is the partial for view 2.</p>
-<p>
-  Showing of 'interpolate' filter:
-  {{ 'Current version is v%VERSION%.' | interpolate }}
-</p>
-<pre>
-  {{ stats | json }}
-</pre>
+<div ng-controller="View2Ctrl">
+
+  <md-content layout="column" layout-padding>
+
+
+    <md-nav-bar md-selected-nav-item="gridInfo.activeTab" nav-bar-aria-label="navigation links">
+      <md-nav-item ng-if="stats.tiles.wall.walls && stats.appointment.wall" ng-repeat="wall in stats.tiles.wall.walls" md-nav-click="showTab('wall'+ $index)" name="wall{{wall.id}}">Стена #{{wall.id + 1}}</md-nav-item>
+      <md-nav-item ng-if="stats.tiles.flor && stats.appointment.flor" md-nav-click="showTab('flor')" name="flor">Пол</md-nav-item>
+    </md-nav-bar>
+    <div class="tabs">
+      <div class="tab" ng-repeat="wallInfo in stats.tiles.wall.walls" ng-show="gridInfo.activeTab == 'wall'+ $index">
+        <h3>Стена#{{$index+1}}</h3>
+        <p>width:{{wallInfo.width}}|height:{{stats.tiles.wall.height}}</p>
+        <p>layout: {{stats.layout.wall}}|tile sizes: {{stats.tile_sizes.wall | json}}</p>
+        <div>
+
+          <span ng-if="stats.colors.wall" ng-repeat="color in stats.colors.wall" ng-style="{'background-color': color}">{{$index}}</span>
+        </div>
+      </div>
+      <div class="tab" ng-show="gridInfo.activeTab == 'flor'">
+        <h3>Пол</h3>
+        <p>width:{{stats.tiles.flor.width}}|height: {{stats.tiles.flor.height}}</p>
+        <p>layout:{{stats.layout.flor}}|tile sizes: {{stats.tile_sizes.flor | json}}</p>
+        <div>
+
+          <span ng-if="stats.colors.flor" ng-repeat="color in stats.colors.flor" ng-style="{'background-color': color}">{{$index}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ext-content">
+      External content for `<pre>{{gridInfo | json}}</pre>`
+    </div>
+
+  </md-content>
+  <pre>
+    {{ stats | json }}
+  </pre>
+
+</div>

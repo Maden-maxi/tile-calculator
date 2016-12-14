@@ -8,6 +8,7 @@ angular.module('myApp', [
   'ui.mask',
   'myApp.view1',
   'myApp.view2',
+  'myApp.view3',
   'myApp.version'
 ])
 .config(['$urlRouterProvider', '$locationProvider', function ($urlRouterProvider, $locationProvider) {
@@ -16,7 +17,7 @@ angular.module('myApp', [
 
 }])
 
-.controller('navCtrl', ['$scope', '$rootScope', '$state', '$log', function ($scope, $rootScope, $state, $log) {
+.controller('appCtrl', ['$scope', '$rootScope', '$state', '$log', function ($scope, $rootScope, $state, $log) {
 
     $scope.restart = function () {
         if ($state.current.name !== 'step1') $state.go('step1');
@@ -25,6 +26,6 @@ angular.module('myApp', [
         $rootScope.$broadcast('restart');
     };
 
-    $scope.links = [{'url': 'step1', 'name': 'Назначение и размеры'}, {'url': 'step2', 'name': 'Разкладка плитки'}, {'url': 'step3', 'name': 'Расчет стоимости'}];
+    $scope.links = [{"url": "step1", "name": "Назначение и размеры", "dependency": ""}, {"url": "step2", "name": "Разкладка плитки", "dependency": "series"}, {"url": "step3", "name": "Расчет стоимости", "dependency": "gridInfo"}];
 
 }]);

@@ -21,20 +21,18 @@
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    <div>
-        <div ng-controller="navCtrl">
 
-            <md-content class="md-padding">
-                <md-button ng-click="restart()" class="md-fab"><i class="material-icons">replay</i></md-button>
-                <ul class="menu">
-                    <li ng-repeat="link in links"><a ui-sref="{{link.url}}" ui-sref-active="current-step">{{link.name}}</a></li>
-                </ul>
-                <ui-view></ui-view>
-                <div>Angular seed app: v<span app-version></span></div>
-            </md-content>
-        </div>
-
+    <div ng-controller="appCtrl">
+        <md-content class="md-padding">
+            <md-button ng-click="restart()" class="md-fab"><i class="material-icons">replay</i></md-button>
+            <ul class="menu">
+                <li ng-repeat="link in links"><a ui-sref="{{link.url}}" ui-sref-active="current-step">{{link.name}}</a></li>
+            </ul>
+            <ui-view></ui-view>
+            <div>Angular seed app: v<span app-version></span></div>
+        </md-content>
     </div>
+
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
@@ -46,10 +44,12 @@
   <script src="bower_components/angular-material/angular-material.js"></script>
   <script src="bower_components/angular-messages/angular-messages.js"></script>
   <script src="bower_components/angular-ui-mask/dist/mask.js"></script>
+  <script src="bower_components/flickity/dist/flickity.pkgd.js"></script>
   <script src="app.js"></script>
   <script src="services/series.js"></script>
   <script src="controllers/step1.js"></script>
   <script src="controllers/step2.js"></script>
+  <script src="controllers/step3.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>

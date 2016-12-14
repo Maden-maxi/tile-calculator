@@ -11,6 +11,10 @@ angular.module('myApp')
                         "tile_sizes": {
                             "wall": {"width": 30, "height": 20},
                             "flor": {"width": 40, "height": 30}
+                        },
+                        "colors": {
+                            "wall": ["#FF215E", "#FFA5B8", "#CD853F", "#FFF655", "#70FF61", "#68FFEE", "#0F5EFF"],
+                            "flor": ["#FF1215", "#7505CD", "#CD8606", "#B6CD00", "#00FFF3"]
                         }
                     },
                     {
@@ -20,6 +24,9 @@ angular.module('myApp')
                         "layout": {"wall": "rectangular"},
                         "tile_sizes": {
                             "wall": {"width": 30, "height": 30}
+                        },
+                        "colors": {
+                            "wall": ["#FF00B3", "#0900FF", "#07FF00", "#00CDC9", "#9297CD"]
                         }
 
                     },
@@ -30,6 +37,9 @@ angular.module('myApp')
                         "layout": {"flor": "rectangular"},
                         "tile_sizes": {
                             "flor": {"width": 40, "height": 40}
+                        },
+                        "colors": {
+                            "flor": ["#72FF8D", "#89BACD", "#5D0C0F", "#161180", "#009B9A", "#000000"]
                         }
                     }
                 ];
