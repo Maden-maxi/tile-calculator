@@ -6,20 +6,31 @@ angular.module('myApp')
                     {
                         "id_series": 0,
                         "type_series": 0,
-                        "tilesUse": {"walls": true, "flor": true},
-                        "layout": {"walls": "rectangular", "flor": "rectangular"}
+                        "appointment": {"wall": true, "flor": true},
+                        "layout": {"wall": "rectangular", "flor": "rectangular"},
+                        "tile_sizes": {
+                            "wall": {"width": 30, "height": 20},
+                            "flor": {"width": 40, "height": 30}
+                        }
                     },
                     {
                         "id_series": 1,
                         "type_series": 1,
-                        "tilesUse": {"walls": true, "flor": false},
-                        "layout": {"walls": "rectangular"}
+                        "appointment": {"wall": true },
+                        "layout": {"wall": "rectangular"},
+                        "tile_sizes": {
+                            "wall": {"width": 30, "height": 30}
+                        }
+
                     },
                     {
                         "id_series": 2,
                         "type_series": 2,
-                        "tilesUse": {"walls": false, "flor": true},
-                        "layout": {"flor": "rectangular"}
+                        "appointment": {"flor": true},
+                        "layout": {"flor": "rectangular"},
+                        "tile_sizes": {
+                            "flor": {"width": 40, "height": 40}
+                        }
                     }
                 ];
             }
