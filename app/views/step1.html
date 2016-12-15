@@ -99,10 +99,10 @@
                        <div flex="50">
                            <md-slider-container>
                                <span>Высота стен</span>
-                               <md-slider flex="50" min="0" max="100" ng-model="seriesData.tiles.wall.height" aria-label="Wall height" id="wall-height-slider">
+                               <md-slider flex="50" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" ng-model="seriesData.tiles.wall.height" aria-label="Wall height" id="wall-height-slider">
                                </md-slider>
                                <md-input-container flex="50">
-                                   <input flex="100" type="number" min="0" max="100" name="heightWall"  ng-pattern="regex" ng-model="seriesData.tiles.wall.height" ng-required="seriesData.appointment.wall" aria-label="Wall height" aria-controls="wall-height-slider">
+                                   <input flex="100" type="number" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" name="heightWall"  ng-pattern="regex" ng-model="seriesData.tiles.wall.height" ng-required="seriesData.appointment.wall" aria-label="Wall height" aria-controls="wall-height-slider">
                                </md-input-container>
                            </md-slider-container>
                        </div>
@@ -112,10 +112,10 @@
 
                             <md-slider-container>
                                 <span>Ширина стены #{{$index + 1}}</span>
-                                <md-slider flex="50" min="0" max="100" ng-model="wall.width" aria-label="Width Wall#{{$index+1}}" id="widthWall{{$index+1}}">
+                                <md-slider flex="50" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" ng-model="wall.width" aria-label="Width Wall#{{$index+1}}" id="widthWall{{$index+1}}">
                                 </md-slider>
                                 <md-input-container flex="50">
-                                    <input flex="100" type="number" min="0" max="100" ng-model="wall.width" ng-bind="wall.id=$index;" name="widthWall"  ng-pattern="regex" ng-required="seriesData.appointment.flor" aria-label="Width Wall#{{$index+1}}" aria-controls="width-wall#{{$index+1}}-slider">
+                                    <input flex="100" type="number" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" ng-model="wall.width" ng-bind="wall.id=$index;" name="widthWall"  ng-pattern="regex" ng-required="seriesData.appointment.flor" aria-label="Width Wall#{{$index+1}}" aria-controls="width-wall#{{$index+1}}-slider">
 
                                 </md-input-container>
                             </md-slider-container>
@@ -141,10 +141,10 @@
 
                             <md-slider-container>
                                 <span>Длинна пола</span>
-                                <md-slider flex="50" min="0" max="100" ng-model="seriesData.tiles.flor.height" aria-label="Flor length" id="flor-length-slider">
+                                <md-slider flex="50" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" ng-model="seriesData.tiles.flor.height" aria-label="Flor length" id="flor-length-slider">
                                 </md-slider>
                                 <md-input-container flex="50">
-                                    <input flex="100" type="number" min="0" max="100" name="lengthFlor"  ng-pattern="regex" ng-model="seriesData.tiles.flor.height" ng-required="seriesData.appointment.flor" aria-label="Flor length" aria-controls="flor-length-slider">
+                                    <input flex="100" type="number" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" name="lengthFlor"  ng-pattern="regex" ng-model="seriesData.tiles.flor.height" ng-required="seriesData.appointment.flor" aria-label="Flor length" aria-controls="flor-length-slider">
                                 </md-input-container>
                             </md-slider-container>
 
@@ -152,10 +152,10 @@
                         <div>
                             <md-slider-container>
                                 <span>Ширина пола</span>
-                                <md-slider flex="50" min="0" max="100" ng-model="seriesData.tiles.flor.width" aria-label="Flor width" id="flor-width-slider">
+                                <md-slider flex="50" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" ng-model="seriesData.tiles.flor.width" aria-label="Flor width" id="flor-width-slider">
                                 </md-slider>
                                 <md-input-container flex="50">
-                                    <input flex="100" type="number" min="0" max="100" name="widthFlor"  ng-pattern="regex" ng-model="seriesData.tiles.flor.width" ng-required="seriesData.appointment.flor" aria-label="Flor length" aria-controls="flor-width-slider">
+                                    <input flex="100" type="number" min="{{rangeSizes.min}}" max="{{rangeSizes.max}}" name="widthFlor"  ng-pattern="regex" ng-model="seriesData.tiles.flor.width" ng-required="seriesData.appointment.flor" aria-label="Flor length" aria-controls="flor-width-slider">
                                 </md-input-container>
                             </md-slider-container>
 

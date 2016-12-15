@@ -16,6 +16,7 @@ angular.module('myApp.view1', ['ui.router'])
 .controller('View1Ctrl', [ '$scope', '$rootScope', '$log', '$window', 'Series', function($scope, $rootScope, $log, $window, Series) {
 
   $scope.regex = '^\\d+$'; // Validate numbers
+  $scope.rangeSizes = {min: 100, max: 1000};
   $scope.seriesData = {};
 
   if( !localStorage.getItem( 'series' ) && angular.isUndefined( $scope.seriesData.id_series ) ){
