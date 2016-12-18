@@ -1,5 +1,5 @@
 angular.module('myApp')
-    .factory('Series', [function () {
+    .factory('Series', [ function () {
         return {
             get: function () {
                return [
@@ -43,6 +43,16 @@ angular.module('myApp')
                         }
                     }
                 ];
+            },
+            save: function ( $scope, condition, item, object ) {
+                //if( condition ) localStorage.setItem( item, JSON.stringify( object ) );
+                function saveGridInfo() {
+                    if ( condition ) {
+                        localStorage.setItem( item, JSON.stringify(object) );
+                    }
+                }
+                $scope.$on('$destroy' , saveGridInfo);
+                window.onunload = saveGridInfo;
             }
         };
     }]);

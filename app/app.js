@@ -9,7 +9,9 @@ angular.module('myApp', [
   'myApp.view1',
   'myApp.view2',
   'myApp.view3',
-  'myApp.version'
+  'myApp.version',
+  'dnd',
+  'angular-carousel-3d'
 ])
 .config(['$urlRouterProvider', '$locationProvider', function ($urlRouterProvider, $locationProvider) {
 
@@ -22,8 +24,8 @@ angular.module('myApp', [
     $scope.restart = function () {
         if ($state.current.name !== 'step1') $state.go('step1');
         localStorage.clear();
-        $log.log('restart');
         $rootScope.$broadcast('restart');
+        $log.log('restart');
     };
 
     $scope.links = [{"url": "step1", "name": "Назначение и размеры", "dependency": ""}, {"url": "step2", "name": "Разкладка плитки", "dependency": "series"}, {"url": "step3", "name": "Расчет стоимости", "dependency": "gridInfo"}];

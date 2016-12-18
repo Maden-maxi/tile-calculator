@@ -81,8 +81,10 @@ angular.module('myApp.view1', ['ui.router'])
       localStorage.setItem('series', JSON.stringify( $scope.seriesData ) );
     }
   }
+    $scope.$on('$destroy', saveData);
+    window.onunload = saveData;
 
-  $scope.$on('$destroy', saveData);
-  window.onunload = saveData;
+  //Series.save( !angular.isUndefined( $scope.seriesData.id_series ), 'series', $scope.seriesData );
+
 
 }]);

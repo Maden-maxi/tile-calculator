@@ -21,9 +21,9 @@ angular.module('myApp.view2', ['ui.router'])
     $scope.gridInfo.zoom = 2;
     if( $scope.stats.appointment.flor == true ) {
       $scope.gridInfo.flor = {
-        rows: Math.round($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height),
-        columns: Math.round($scope.stats.tiles.flor.width/ $scope.stats.tile_sizes.flor.width),
-        cellsCount: Math.round($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height) * Math.round($scope.stats.tiles.flor.width/ $scope.stats.tile_sizes.flor.width),
+        rows: Math.ceil($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height),
+        columns: Math.ceil($scope.stats.tiles.flor.width / $scope.stats.tile_sizes.flor.width),
+        cellsCount: Math.ceil($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height) * Math.ceil($scope.stats.tiles.flor.width / $scope.stats.tile_sizes.flor.width),
         grid: []
       };
       /*
@@ -71,14 +71,14 @@ angular.module('myApp.view2', ['ui.router'])
       };
       */
       $scope.gridInfo.wall = {
-        rows: Math.round(  $scope.stats.tiles.wall.height / $scope.stats.tile_sizes.wall.height ),
+        rows: Math.ceil(  $scope.stats.tiles.wall.height / $scope.stats.tile_sizes.wall.height ),
         columns: [],
         cellsCount: [],
         grid: []
       };
       $scope.stats.tiles.wall.walls.forEach(function (element, index, array) {
         console.log(element.width, $scope.stats.tile_sizes.wall.width );
-        $scope.gridInfo.wall.columns.push( Math.round( element.width / $scope.stats.tile_sizes.wall.width ) );
+        $scope.gridInfo.wall.columns.push( Math.ceil( element.width / $scope.stats.tile_sizes.wall.width ) );
       });
       $scope.gridInfo.wall.columns.forEach(function (element, index, array) {
         $log.log( element );
@@ -106,16 +106,218 @@ angular.module('myApp.view2', ['ui.router'])
     $scope.gridInfo.activeTab = tabId;
   };
 
+    $scope.carouselColors = {
+        visible: 5,
+        perspective: 35,
+        startSlide: 0,
+        border: 3,
+        dir: 'ltr',
+        width: 360,
+        height: 270,
+        space: 220,
+        autoRotationSpeed: 2500,
+        loop: true
+    };
+
+
+  //drag
+    $scope.dndVars = {
+        isDropend: false,
+        isActive: false,
+        isOver: false,
+        isOverColumn: false,
+        dragoverClass: ''
+    };
+    $scope.rectColor = {
+        dragstart: function () {
+            $log.log('dragstart', arguments);
+        },
+        drag: function () {
+            $log.log('drag', arguments);
+        },
+        dragend: function (dropmodel, dragmodel) {
+            $log.log('dragend', arguments);
+            if(!arguments[0]) $scope.dropped = false;
+            if( $scope.dndVars.isOver ){
+                $scope.dropColor = arguments[1];
+                $scope.dndVars.isOver = false;
+                $scope.dndVars.dragoverClass = '';
+                dropmodel.color = dragmodel;
+                dropmodel.hover = undefined;
+            } else {
+                $scope.dropColor = 'transparent';
+            }
+
+        }
+    };
+    $scope.rectDrop = {
+        drop: function (dragmodel, model) {
+            console.log('drop', arguments);
+            if(!arguments[0]) $scope.dropped = model;
+        },
+        dragenter: function ( dropmodel, dragmodel ) {
+            $log.log('dragenter', arguments);
+            $log.log(dropmodel);
+            dropmodel.hover = 'dragover';
+            $scope.dragActive = dropmodel;
+            $scope.dndVars.isOver = true;
+            $scope.dndVars.dragoverClass = 'dragover';
+        },
+        dragover: function () {
+            $log.log('dragover', arguments);
+        },
+        dragleave: function (dropmodel, dragmodel) {
+            dropmodel.hover = undefined;
+            $log.log('dragleave', arguments);
+            $scope.dndVars.isOver = false;
+            $scope.dndVars.dragoverClass = '';
+        }
+    };
+
+    //fill row & col
+    $scope.gridColumn = {
+        dragenter: function (dropmodel, dragmodel, wallIndex, columnIndex) {
+            $scope.dndVars.isOverColumn = true;
+            $log.log(dragmodel, dragmodel, wallIndex, columnIndex);
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].hover = 'dragover';
+            }
+        },
+        dragleave: function (dropmodel, dragmodel, wallIndex, columnIndex) {
+            $log.log(dragmodel, dragmodel);
+            $scope.dndVars.isOverColumn = false;
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].hover = undefined;
+            }
+        },
+        drop: function (dropmodel, dragmodel, wallIndex, columnIndex) {
+            if( $scope.dndVars.isOverColumn ) {
+                $scope.dndVars.isOverColumn = false;
+                for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                    $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].hover = undefined;
+                    $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].color = dragmodel;
+                }
+            }
+        },
+        clear: function (wallIndex, columnIndex) {
+            $log.log( $scope.gridInfo.wall.grid[wallIndex].length );
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].color = undefined;
+            }
+        }
+    };
+
+    $scope.gridRow = {
+        dragenter: function (dropmodel, dragmodel, wallIndex, columnIndex) {
+            $scope.dndVars.isOverColumn = true;
+            $log.log(dragmodel, dragmodel, wallIndex, columnIndex);
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex][columnIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][columnIndex][i].color = undefined;
+            }
+        },
+        dragleave: function (dropmodel, dragmodel, wallIndex, columnIndex) {
+            $log.log(dragmodel, dragmodel);
+            $scope.dndVars.isOverColumn = false;
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].hover = undefined;
+            }
+        },
+        drop: function (dropmodel, dragmodel, wallIndex, columnIndex) {
+            if( $scope.dndVars.isOverColumn ) {
+                $scope.dndVars.isOverColumn = false;
+                for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                    $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].hover = undefined;
+                    $scope.gridInfo.wall.grid[wallIndex][i][columnIndex].color = dragmodel;
+                }
+            }
+        },
+        clear: function (wallIndex, rowIndex) {
+            $log.log( $scope.gridInfo.wall.grid[wallIndex][rowIndex].length );
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex][rowIndex].length; i++ ) {
+                $log.log( $scope.gridInfo.wall.grid[wallIndex][rowIndex][i].color = undefined );
+            }
+        }
+    };
+
+    $scope.gridCover = {
+        dragenter: function (dropmodel, dragmodel, type, wallIndex, typeIndex) {
+            $scope.dndVars.isOverColumn = true;
+            $log.log(dragmodel, dragmodel, wallIndex);
+            if( type === 'row') {
+                for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex][typeIndex].length; i++ ) {
+                    $scope.gridInfo.wall.grid[wallIndex][typeIndex][i].hover = 'dragover';
+                }
+            } else if (type === 'column') {
+                for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                    $scope.gridInfo.wall.grid[wallIndex][i][typeIndex].hover = 'dragover';
+                }
+            }
+        },
+        dragleave: function (dropmodel, dragmodel, type, wallIndex, typeIndex) {
+            $log.log(dragmodel, dragmodel);
+            $scope.dndVars.isOverColumn = false;
+            if( type === 'row') {
+                for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex][typeIndex].length; i++ ) {
+                    $scope.gridInfo.wall.grid[wallIndex][typeIndex][i].hover = undefined;
+                }
+            } else if (type === 'column') {
+                for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                    $scope.gridInfo.wall.grid[wallIndex][i][typeIndex].hover = undefined;
+                }
+            }
+        },
+        drop: function (dropmodel, dragmodel, type, wallIndex, typeIndex) {
+            if( $scope.dndVars.isOverColumn ) {
+                $scope.dndVars.isOverColumn = false;
+
+                if( type === 'row') {
+                    for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex][typeIndex].length; i++ ) {
+                        $scope.gridInfo.wall.grid[wallIndex][typeIndex][i].hover = undefined;
+                        $scope.gridInfo.wall.grid[wallIndex][typeIndex][i].color = dragmodel;
+                    }
+                } else if (type === 'column') {
+                    for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                        $scope.gridInfo.wall.grid[wallIndex][i][typeIndex].hover = undefined;
+                        $scope.gridInfo.wall.grid[wallIndex][i][typeIndex].color = dragmodel;
+                    }
+                }
+
+            }
+        }
+    };
+
+    /**
+     *
+     * @param type
+     * @param wallIndex
+     * @param typeIndex
+     */
+    $scope.gridClean = function ( type, wallIndex, typeIndex ) {
+        if( type === 'row') {
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex][typeIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][typeIndex][i].color = undefined;
+            }
+        } else if (type === 'column') {
+            for ( var i = 0; i < $scope.gridInfo.wall.grid[wallIndex].length; i++ ) {
+                $scope.gridInfo.wall.grid[wallIndex][i][typeIndex].color = undefined;
+            }
+        }
+    };
+
+    $scope.eraser = undefined;
+
   function saveGridInfo() {
-    localStorage.setItem( 'gridInfo', JSON.stringify($scope.gridInfo) );
+    if ( localStorage.getItem('series') ) {
+      localStorage.setItem( 'gridInfo', JSON.stringify($scope.gridInfo) );
+    }
   }
+
+  $scope.$on('$destroy' , saveGridInfo);
+  window.onunload = saveGridInfo;
 
   $scope.$on('restart', function () {
     $scope.gridInfo = {};
     localStorage.clear();
   });
-
-  $scope.$on('$destroy', saveGridInfo);
-  window.onunload = saveGridInfo;
 
 }]);
