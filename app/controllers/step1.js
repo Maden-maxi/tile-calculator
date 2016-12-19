@@ -28,19 +28,18 @@ angular.module('myApp.view1', ['ui.router'])
   }
 
   $scope.$watch('seriesData.id_series', function (newValue, oldValue) {
-    $log.log(newValue, oldValue);
+    if($rootScope.DEBUG_MOD) $log.log(newValue, oldValue);
     if( !angular.isUndefined(newValue) ){
       var initVal = Series.get();
       var series = JSON.parse( localStorage.getItem('series') );
-      $log.log(initVal[newValue]);
-      $log.log(series);
+      if($rootScope.DEBUG_MOD) $log.log(initVal[newValue]);
+      if($rootScope.DEBUG_MOD) $log.log(series);
       $scope.seriesData.appointment =  (series && ( oldValue === 0 ) ) ? series.appointment : initVal[newValue].appointment;
       $scope.seriesData.tile_sizes = initVal[newValue].tile_sizes;
       $scope.seriesData.layout = initVal[newValue].layout;
       $scope.seriesData.colors = initVal[newValue].colors;
       switch (newValue) {
         case 0:
-          //$log.log(initVal[newValue]);
           if( angular.isUndefined($scope.seriesData.tiles) ) {
             $scope.seriesData.tiles = {
               "wall": {"walls": [{}]}
@@ -48,7 +47,6 @@ angular.module('myApp.view1', ['ui.router'])
           }
           break;
         case 1:
-          //$log.log(initVal[newValue]);
           $scope.seriesData.appointment = initVal[newValue].appointment;
           if( angular.isUndefined($scope.seriesData.tiles) ) {
             $scope.seriesData.tiles= {
@@ -58,7 +56,6 @@ angular.module('myApp.view1', ['ui.router'])
           break;
         case 2:
           $scope.seriesData.appointment = initVal[newValue].appointment;
-          //$log.log(initVal[newValue]);
           break;
       }
     }
@@ -81,10 +78,9 @@ angular.module('myApp.view1', ['ui.router'])
       localStorage.setItem('series', JSON.stringify( $scope.seriesData ) );
     }
   }
-    $scope.$on('$destroy', saveData);
-    window.onunload = saveData;
+  $scope.$on('$destroy', saveData);
+  window.onunload = saveData;
 
-  //Series.save( !angular.isUndefined( $scope.seriesData.id_series ), 'series', $scope.seriesData );
-
+  //Series.save( $scope, !angular.isUndefined( $scope.seriesData.id_series ), 'series', $scope.seriesData );
 
 }]);

@@ -24,6 +24,11 @@
     <![endif]-->
 
     <div ng-controller="appCtrl">
+        <md-input-container>
+            <md-checkbox class="md-primary" id="debug" ng-model="DEBUG_MOD" ng-click="saveDebugMod($event)" aria-label="Debug trigger">
+                :DEBUG
+            </md-checkbox>
+        </md-input-container>
         <md-content class="md-padding">
             <md-button ng-click="restart()" class="md-fab"><i class="material-icons">replay</i></md-button>
             <ul class="menu">

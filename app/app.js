@@ -19,11 +19,12 @@ angular.module('myApp', [
 
 }])
 
-.controller('appCtrl', ['$scope', '$rootScope', '$state', '$log', function ($scope, $rootScope, $state, $log) {
-
+.controller('appCtrl', ['$scope', '$rootScope', '$state', '$log', '$window',function ($scope, $rootScope, $state, $log, $window) {
+    $rootScope.DEBUG_MOD = false;
     $scope.restart = function () {
         if ($state.current.name !== 'step1') $state.go('step1');
-        localStorage.clear();
+        localStorage.removeItem('series');
+        localStorage.removeItem('gridInfo');
         $rootScope.$broadcast('restart');
         $log.log('restart');
     };

@@ -21,7 +21,8 @@
             </md-input-container>
 
         </md-content>
-            {{seriesData}}
+        <div ng-if="DEBUG_MOD">{{seriesData | json }}</div>
+
         <div ng-show="seriesData.id_series !== undefined">
             <md-content layout="row" layout-padding>
 

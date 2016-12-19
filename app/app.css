@@ -40,6 +40,23 @@
 td{
   border: 1px solid #000;
 }
+.cursor-pointer{
+    cursor: pointer;
+}
+.grab{
+    cursor: -webkit-grab;
+    cursor: grab;
+}
+.grabbing{
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+}
+.carousel{
+    padding: 60px 0;
+}
+.carousel-cell{
+
+}
 .dragover{
     background-color: rgba(137, 140, 255, 0.5) !important;
 }
@@ -65,32 +82,42 @@ td{
     border-top: none;
     border-left: none;
     font-size: 1rem;
+    text-align: center;
+    overflow: hidden;
+}
+.column .cursor-pointer{
+    vertical-align: middle;
+    color: red;
 }
 .diagonal{
     transform: rotate(45deg);
 }
 .column.diagonal{
-
+    margin-bottom: 32px;
+    left: 0;
 }
 .column.diagonal:nth-child(even){
-    /*margin: 0px -30px -30px 0px;*/
-    /*top: -55px;*/
+
+    top: -40px;
 }
 .column.diagonal:nth-child(odd){
-    /*margin: 0px -30px -30px 0px;*/
-    /*top: -12px;*/
+
+    top: 16px;
 }
 .column.diagonal:nth-child(1){}
 .column.diagonal:nth-child(2){
-    /*left: -60px;*/
+    left: 0;
 }
 .column.diagonal:nth-child(3){
     /*left: calc(-60px - 42px);*/
+    left: -22px;
 }
 .column.diagonal:nth-child(4){
-    /*left: calc(-102px - 42px);*/
+    left: -44px;
 }
-.column.diagonal:nth-child(5){}
+.column.diagonal:nth-child(5){
+    left: -66px;
+}
 .column.diagonal:nth-child(6){}
 .column.diagonal:nth-child(7){}
 .column.diagonal:nth-child(8){}

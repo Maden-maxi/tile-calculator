@@ -9,7 +9,7 @@ angular.module('myApp')
                         "appointment": {"wall": true, "flor": true},
                         "layout": {"wall": "rectangular", "flor": "rectangular"},
                         "tile_sizes": {
-                            "wall": {"width": 30, "height": 20},
+                            "wall": {"width": 45, "height": 35},
                             "flor": {"width": 40, "height": 30}
                         },
                         "colors": {
