@@ -1,5 +1,5 @@
 angular.module('myApp')
-    .factory('Series', [ function () {
+    .factory('Series', [ function (  ) {
         return {
             get: function () {
                return [
@@ -39,20 +39,19 @@ angular.module('myApp')
                             "flor": {"width": 40, "height": 40}
                         },
                         "colors": {
-                            "flor": ["#72FF8D", "#89BACD", "#5D0C0F", "#161180", "#009B9A", "#000000"]
+                            "flor": ["#72FF8D", "#89BACD", "#5D0C0F", "#161180", "#009B9A", "#f0f0f0"]
                         }
                     }
                 ];
             },
-            save: function ( $scope, condition, item, object ) {
-                //if( condition ) localStorage.setItem( item, JSON.stringify( object ) );
-                function saveGridInfo() {
+            save: function ( condition, item, object ) {
+                function saveToLocalStorage() {
                     if ( condition ) {
                         localStorage.setItem( item, JSON.stringify(object) );
                     }
                 }
-                $scope.$on('$destroy' , saveGridInfo);
-                window.onunload = saveGridInfo;
+                window.onunload = saveToLocalStorage;
+
             }
         };
     }]);

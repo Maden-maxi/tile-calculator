@@ -31,31 +31,37 @@
             </tr>
 
           </table>
+          <div layout="row">
+            <div flex="10">
+              <md-input-container>
+                <md-button ng-click="changeCellsGridParams(gridInfo.wall.grid[wallIndex], {'color': undefined})" class="md-fab" aria-label="Clear all grid">
+                  <i class="material-icons">delete_forever</i>
+                </md-button>
+              </md-input-container>
+            </div>
+            <div flex="90">
+              <h3>Сделайте двойной клик по плитке и вся сетка заполниться єтим цветом.</h3>
+              <carousel3d class="carousel"
+                          options="carouselColorsWall"
+                          ng-model="stats.colors.wall">
+                <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.wall">
+                  <div class="carousel-item"
+                       ng-style="{'background-color': RGBColor, 'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px'}"
+                       ng-class="dndVars.dragState"
+                       ng-dblclick="changeCellsGridParams(gridInfo.wall.grid[wallIndex], {'color': RGBColor})"
+                       dnd-draggable="true"
+                       dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
+                       dnd-on-dragstart="rectColor.dragstart($dragmodel, $dropmodel, $dragged)"
+                       dnd-on-drag="rectColor.drag($dropmodel,$dropmodel, $dragged)"
+                       dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel, $dragged)"
+                       dnd-containment="'#step2'"
 
-          <carousel3d class="carousel"
-                      options="carouselColorsWall"
-                      ng-model="stats.colors.wall">
-            <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.wall">
-              <div class="carousel-item"
-                   ng-style="{'background-color': RGBColor, 'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px'}"
-                   ng-class="dndVars.dragState"
-                   dnd-draggable="true"
-                   dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
-                   dnd-on-dragstart="rectColor.dragstart($dragmodel, $dropmodel, $dragged)"
-                   dnd-on-drag="rectColor.drag($dropmodel,$dropmodel, $dragged)"
-                   dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel, $dragged)"
-                   dnd-containment="'#step2'"
-
-                   dnd-model="RGBColor"></div>
-            </carousel3d-slide>
-          </carousel3d>
-
-          <div>
-            <md-input-container>
-              <md-button ng-click="clearTable( gridInfo.wall.grid[wallIndex] )" class="md-fab" aria-label="Clear all grid">
-                <i class="material-icons">delete_forever</i>
-              </md-button>
-            </md-input-container>
+                       dnd-model="RGBColor">
+                    <i class="material-icons">format_color_fill</i>
+                  </div>
+                </carousel3d-slide>
+              </carousel3d>
+            </div>
           </div>
 
           <div class="container">
@@ -82,7 +88,6 @@
                    dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
                    dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
                    dnd-model="gridInfo.wall.grid[wallIndex][index][0]">
-                <!--<span style="font-size: 8px">{{$index+1}}:{{index+1}}</span>-->
                   <i class="cursor-pointer material-icons" ng-click="gridCls('column', gridInfo.wall.grid[wallIndex], index)">clear</i>
               </div>
             </div>
@@ -142,32 +147,36 @@
 
           </table>
 
-          <carousel3d class="carousel"
-                      options="carouselColorsFlor"
-                      ng-model="stats.colors.flor">
-            <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.flor">
-              <div class="carousel-item"  ng-style="{'background-color': RGBColor, 'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px'}"
-                   ng-class="dndVars.dragState"
-                   dnd-draggable="true"
-                   dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
-                   dnd-on-dragstart="rectColor.dragstart()"
-                   dnd-on-drag="rectColor.drag($dropmodel)"
-                   dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
-                   dnd-containment="'#step2'"
+          <div layout="row">
+            <div flex="10">
+              <md-input-container>
+                <md-button ng-click="changeCellsGridParams(gridInfo.flor.grid, {'color': undefined})" class="md-fab" aria-label="Clear all grid">
+                  <i class="material-icons">delete_forever</i>
+                </md-button>
+              </md-input-container>
+            </div>
+            <div flex="90">
+              <h3>Сделайте двойной клик по плитке и вся сетка заполниться єтим цветом.</h3>
+              <carousel3d class="carousel"
+                          options="carouselColorsFlor"
+                          ng-model="stats.colors.flor">
+                <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.flor">
+                  <div class="carousel-item"  ng-style="{'background-color': RGBColor, 'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px'}"
+                       ng-class="dndVars.dragState"
+                       ng-dblclick="changeCellsGridParams(gridInfo.flor.grid, {'color': RGBColor})"
+                       dnd-draggable="true"
+                       dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
+                       dnd-on-dragstart="rectColor.dragstart()"
+                       dnd-on-drag="rectColor.drag($dropmodel)"
+                       dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
+                       dnd-containment="'#step2'"
 
-                   dnd-model="RGBColor">
-                <i class="material-icons">format_color_fill</i>
-              </div>
-            </carousel3d-slide>
-          </carousel3d>
-
-
-          <div>
-            <md-input-container>
-              <md-button ng-click="clearTable( gridInfo.flor.grid )" class="md-fab" aria-label="Clear all grid">
-                <i class="material-icons">delete_forever</i>
-              </md-button>
-            </md-input-container>
+                       dnd-model="RGBColor">
+                    <i class="material-icons">format_color_fill</i>
+                  </div>
+                </carousel3d-slide>
+              </carousel3d>
+            </div>
           </div>
 
           <div class="container">

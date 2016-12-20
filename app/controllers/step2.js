@@ -11,19 +11,7 @@ angular.module('myApp.view2', ['ui.router'])
     });
 }])
 
-.controller('View2Ctrl', [ '$scope', '$rootScope', '$log', function($scope, $rootScope, $log) {
-
-    function createTable(rows, columns, object) {
-        for (var row = 0; row < rows; row++ ) {
-            object[row] = [];
-            for ( var column = 0; column < columns; column++ ) object[row][column] = {id: column};
-        }
-    }
-
-    $scope.clearTable = function (object) {
-        for (var row = 0; row < object.length; row++ )
-            for ( var column = 0; column < object[row].length; column++ ) object[row][column].color = undefined;
-    };
+.controller('View2Ctrl', [ '$scope', '$rootScope', 'Grid', '$log', function($scope, $rootScope, Grid, $log) {
 
     $scope.rombusStyles = function (side, rowIndex, columnIndex, color) {
         return {
@@ -43,7 +31,7 @@ angular.module('myApp.view2', ['ui.router'])
     if ( !localStorage.getItem('gridInfo') ) {
 
         $scope.gridInfo.activeTab = '0';
-        $scope.gridInfo.zoom = 2;
+        $scope.gridInfo.zoom = 1;
 
         if( $scope.stats.appointment.flor == true ) {
             $scope.gridInfo.flor = {
@@ -53,8 +41,8 @@ angular.module('myApp.view2', ['ui.router'])
                 grid: []
             };
 
-            createTable($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
-
+            //createTable($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
+            Grid.build($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
             if ($rootScope.DEBUG_MOD) $log.log($scope.gridInfo.flor.grid);
         }
         if ( $scope.stats.appointment.wall == true ) {
@@ -76,7 +64,8 @@ angular.module('myApp.view2', ['ui.router'])
 
             for( var i = 0; i < $scope.gridInfo.wall.columns.length; i++ ){
                 $scope.gridInfo.wall.grid[i] = [];
-                createTable($scope.gridInfo.wall.rows,$scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
+                //createTable($scope.gridInfo.wall.rows,$scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
+                Grid.build($scope.gridInfo.wall.rows,$scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
             }
 
             if ($rootScope.DEBUG_MOD) $log.log( $scope.gridInfo.wall.grid );
@@ -130,7 +119,6 @@ angular.module('myApp.view2', ['ui.router'])
         dragend: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) $log.log('dragend', arguments);
             $scope.dndVars.dragState = 'grab';
-            if(!dropmodel) $scope.dropped = false;
 
             if( $scope.dndVars.isOver ){
                 $scope.dropColor = dragmodel;
@@ -146,7 +134,6 @@ angular.module('myApp.view2', ['ui.router'])
     $scope.rectDrop = {
         drop: function (dragmodel, model) {
             if ($rootScope.DEBUG_MOD) console.log('drop', arguments);
-            if(!dragmodel) $scope.dropped = model;
         },
         dragenter: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragenter', arguments);
@@ -163,43 +150,23 @@ angular.module('myApp.view2', ['ui.router'])
             $scope.dndVars.isOver = false;
         }
     };
-    
-    /**
-     * Iterate over rows and cols params
-     * @param type string
-     * @param arr array
-     * @param typeIndex int
-     * @param params object
-     */
-    function iterateOver(type, arr, typeIndex, params) {
-        var key, row, column;
-
-        if(type === 'row')
-            for ( column = 0; column < arr[typeIndex].length; column++ )
-                for( key in params )
-                    arr[typeIndex][column][key] = params[key];
-        else if(type === 'column')
-            for ( row = 0; row < arr.length; row++ )
-                for( key in params )
-                    arr[row][typeIndex][key] = params[key];
-    }
 
     $scope.gridCov = {
         dragenter: function (dropmodel, dragmodel, type, arr, typeIndex) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
             $scope.dndVars.isOverColumn = true;
-            iterateOver(type, arr, typeIndex, {"hover": "dragover"} );
+            Grid.changeAxisParams(type, arr, typeIndex, {"hover": "dragover"});
         },
         dragleave: function (dropmodel, dragmodel, type, arr, typeIndex) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
             $scope.dndVars.isOverColumn = false;
-            iterateOver(type, arr, typeIndex, {"hover": undefined});
+            Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined});
         },
         drop: function (dropmodel, dragmodel, type, arr, typeIndex) {
             if( $scope.dndVars.isOverColumn ) {
                 if ($rootScope.DEBUG_MOD) $log.log(arguments);
                 $scope.dndVars.isOverColumn = false;
-                iterateOver(type, arr, typeIndex, {"hover": undefined, "color": dragmodel});
+                Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined, "color": dragmodel});
             }
         }
     };
@@ -211,7 +178,15 @@ angular.module('myApp.view2', ['ui.router'])
      * @param typeIndex integer
      */
     $scope.gridCls = function (type, arr, typeIndex) {
-        iterateOver(type, arr, typeIndex, {"color": undefined});
+        Grid.changeAxisParams(type, arr, typeIndex, {"color": undefined});
+    };
+    /**
+     * Change all Cells Params
+     * @param object array
+     * @param params object
+     */
+    $scope.changeCellsGridParams = function (object, params) {
+        Grid.changeAllCellsParams(object, params);
     };
     $scope.eraser = undefined;
     

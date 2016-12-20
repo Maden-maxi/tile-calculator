@@ -44,27 +44,29 @@ angular.module('myApp.view1', ['ui.router'])
                     break;
                 case 1:
                     $scope.seriesData.appointment = initVal[newValue].appointment;
-                    $scope.seriesData.tiles = { "wall": {"walls": [{}]} };
-                    $scope.seriesData.tiles.flor = undefined;
+                    if( !localStorage.getItem('series') ) {
+                        $scope.seriesData.tiles = { "wall": {"walls": [{}]} };
+                        $scope.seriesData.tiles.flor = undefined;
+                    }
                     break;
                 case 2:
-                    $scope.seriesData.appointment = initVal[newValue].appointment;
-                    $scope.seriesData.tiles.wall = undefined;
+                    if( !localStorage.getItem('series') ) {
+                        $scope.seriesData.appointment = initVal[newValue].appointment;
+                        $scope.seriesData.tiles.wall = undefined;
+                    }
                     break;
             }
         }
     });
 
+
     $scope.checkWallType = function (newVal) {
         if(newVal) $scope.seriesData.tiles = { "wall": {"walls": [{}]} };
         else $scope.seriesData.tiles.wall = undefined;
     };
-
-
-    $scope.$on('restart', function () {
-        $scope.seriesData = {"gutter": 3};
-    });
-
+    /**
+     * Save State
+     */
     function saveData() {
         if( !angular.isUndefined( $scope.seriesData.id_series ) )
             localStorage.setItem('series', JSON.stringify( $scope.seriesData ) );
@@ -72,6 +74,10 @@ angular.module('myApp.view1', ['ui.router'])
 
     $scope.$on('$destroy', saveData);
     window.onunload = saveData;
+
+    $scope.$on('restart', function () {
+        $scope.seriesData = {"gutter": 3};
+    });
 
     //Series.save( $scope, !angular.isUndefined( $scope.seriesData.id_series ), 'series', $scope.seriesData );
 }]);
