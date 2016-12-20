@@ -3,27 +3,48 @@
 angular.module('myApp.view2', ['ui.router'])
 
 .config(['$stateProvider', function($stateProvider) {
-  $stateProvider.state({
-    name: 'step2',
-    url: '/step2',
-    templateUrl: 'views/step2.html',
-    controller: 'View2Ctrl'
-  });
-
+    $stateProvider.state({
+        name: 'step2',
+        url: '/step2',
+        templateUrl: 'views/step2.html',
+        controller: 'View2Ctrl'
+    });
 }])
 
-.controller('View2Ctrl', [ '$scope', '$rootScope', '$log', function($scope, $rootScope,$log) {
+.controller('View2Ctrl', [ '$scope', '$rootScope', '$log', function($scope, $rootScope, $log) {
+
     function createTable(rows, columns, object) {
-        for (var i = 0; i < rows; i++ ) {
-            object[i] = [];
-            for ( var j = 0; j < columns; j++ ) object[i][j] = {id:j};
+        for (var row = 0; row < rows; row++ ) {
+            object[row] = [];
+            for ( var column = 0; column < columns; column++ ) object[row][column] = {id: column};
         }
     }
+
+    $scope.clearTable = function (object) {
+        for (var row = 0; row < object.length; row++ )
+            for ( var column = 0; column < object[row].length; column++ ) object[row][column].color = undefined;
+    };
+
+    $scope.rombusStyles = function (side, rowIndex, columnIndex, color) {
+        return {
+            'width': side + 'px',
+            'height': side + 'px',
+            'background-color': color || '#fefefe',
+            'margin-left': (side) / -2 + 'px',
+            'margin-top': (side) / -2 + 'px',
+            'top': ( (side) * Math.SQRT2 ) / (-rowIndex) + side + 'px',
+            'left':  ( (side) * Math.SQRT2 ) / (-columnIndex) + side + 'px'
+        };
+    };
+
     $scope.stats = JSON.parse(localStorage.getItem('series'));
     $scope.gridInfo = {};
+
     if ( !localStorage.getItem('gridInfo') ) {
+
         $scope.gridInfo.activeTab = '0';
         $scope.gridInfo.zoom = 2;
+
         if( $scope.stats.appointment.flor == true ) {
             $scope.gridInfo.flor = {
                 rows: Math.ceil($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height),
@@ -45,11 +66,11 @@ angular.module('myApp.view2', ['ui.router'])
                 grid: []
             };
 
-            $scope.stats.tiles.wall.walls.forEach(function (element, index, array) {
+            $scope.stats.tiles.wall.walls.forEach(function (element, index) {
                 $scope.gridInfo.wall.columns[index] = Math.ceil( element.width / $scope.stats.tile_sizes.wall.width );
             });
 
-            $scope.gridInfo.wall.columns.forEach(function (element, index, array) {
+            $scope.gridInfo.wall.columns.forEach(function (element, index) {
                 $scope.gridInfo.wall.cellsCount[index] = $scope.gridInfo.wall.rows * element;
             });
 
@@ -91,10 +112,8 @@ angular.module('myApp.view2', ['ui.router'])
         $scope.carouselColorsFlor = carouselSettings;
     }
 
-  //drag
+    //drag
     $scope.dndVars = {
-        isDropend: false,
-        isActive: false,
         isOver: false,
         isOverColumn: false,
         dragState: 'grab'
@@ -112,6 +131,7 @@ angular.module('myApp.view2', ['ui.router'])
             if ($rootScope.DEBUG_MOD) $log.log('dragend', arguments);
             $scope.dndVars.dragState = 'grab';
             if(!dropmodel) $scope.dropped = false;
+
             if( $scope.dndVars.isOver ){
                 $scope.dropColor = dragmodel;
                 $scope.dndVars.isOver = false;
@@ -143,116 +163,73 @@ angular.module('myApp.view2', ['ui.router'])
             $scope.dndVars.isOver = false;
         }
     };
+    
+    /**
+     * Iterate over rows and cols params
+     * @param type string
+     * @param arr array
+     * @param typeIndex int
+     * @param params object
+     */
+    function iterateOver(type, arr, typeIndex, params) {
+        var key, row, column;
 
-    //TODO: How create dinamyc object name
-    function iterateOver(type, arr, typeIndex, param) {
-        if(type === 'row') {
-            for ( var i = 0; i < arr[typeIndex].length; i++ ) {
-                for( var j = 0; i < param.length; j++ )
-                    arr[typeIndex][i][param[j].key] = param.value;
-            }
-        }
-        else if(type === 'column') {
-            for ( var i = 0; i < arr.length; i++ )
-                for( var j = 0; i < param.length; j++ )
-                    arr[i][typeIndex][param[j].key] = param.value;
-        }
+        if(type === 'row')
+            for ( column = 0; column < arr[typeIndex].length; column++ )
+                for( key in params )
+                    arr[typeIndex][column][key] = params[key];
+        else if(type === 'column')
+            for ( row = 0; row < arr.length; row++ )
+                for( key in params )
+                    arr[row][typeIndex][key] = params[key];
     }
 
-
-
-
-    //grid cover row or column
-    //TODO: Refactor gridCover
     $scope.gridCov = {
         dragenter: function (dropmodel, dragmodel, type, arr, typeIndex) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
             $scope.dndVars.isOverColumn = true;
-            switch (type) {
-                case 'row':
-                    for ( var i = 0; i < arr[typeIndex].length; i++ ) {
-                        arr[typeIndex][i].hover = 'dragover';
-                    }
-                    break;
-                case 'column':
-                    for ( var i = 0; i < arr.length; i++ ) {
-                        arr[i][typeIndex].hover = 'dragover';
-                    }
-                    break;
-            }
+            iterateOver(type, arr, typeIndex, {"hover": "dragover"} );
         },
         dragleave: function (dropmodel, dragmodel, type, arr, typeIndex) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
             $scope.dndVars.isOverColumn = false;
-            switch (type) {
-                case 'row':
-                    for ( var i = 0; i < arr[typeIndex].length; i++ ) {
-                        arr[typeIndex][i].hover = undefined;
-                    }
-                    break;
-                case 'column':
-                    for ( var i = 0; i < arr.length; i++ ) {
-                        arr[i][typeIndex].hover = undefined;
-                    }
-                    break;
-            }
+            iterateOver(type, arr, typeIndex, {"hover": undefined});
         },
         drop: function (dropmodel, dragmodel, type, arr, typeIndex) {
             if( $scope.dndVars.isOverColumn ) {
-                $scope.dndVars.isOverColumn = false;
                 if ($rootScope.DEBUG_MOD) $log.log(arguments);
-                switch (type) {
-                    case 'row':
-                        for ( var i = 0; i < arr[typeIndex].length; i++ ) {
-                            arr[typeIndex][i].hover = undefined;
-                            arr[typeIndex][i].color = dragmodel;
-                        }
-                        break;
-                    case 'column':
-                        for ( var i = 0; i < arr.length; i++ ) {
-                            arr[i][typeIndex].hover = undefined;
-                            arr[i][typeIndex].color = dragmodel;
-                        }
-                        break;
-                }
+                $scope.dndVars.isOverColumn = false;
+                iterateOver(type, arr, typeIndex, {"hover": undefined, "color": dragmodel});
             }
         }
     };
 
     /**
-     *
+     * Clear cells
      * @param type string
      * @param arr array
-     * @param index integer
+     * @param typeIndex integer
      */
-    $scope.gridCls = function (type, arr, index) {
-        switch (type){
-            case 'row':
-                for ( var i = 0; i < arr[index].length; i++ ) {
-                    arr[index][i].color = undefined;
-                }
-                break;
-            case 'column':
-                for ( var i = 0; i < arr.length; i++ ) {
-                    arr[i][index].color = undefined;
-                }
-                break;
-        }
+    $scope.gridCls = function (type, arr, typeIndex) {
+        iterateOver(type, arr, typeIndex, {"color": undefined});
     };
-
     $scope.eraser = undefined;
+    
+    //TODO: Checking grids on empty
+    function gridIsEmpty() {
+        
+    }
 
-  function saveGridInfo() {
-      if ( localStorage.getItem('series') ) {
-          localStorage.setItem( 'gridInfo', JSON.stringify($scope.gridInfo) );
-      }
-  }
+    /**
+     * Save grid state
+     */
+    function saveGridInfo() {
+        if ( localStorage.getItem('series') ) localStorage.setItem( 'gridInfo', JSON.stringify($scope.gridInfo) );
+    }
 
-  $scope.$on('$destroy' , saveGridInfo);
-  window.onunload = saveGridInfo;
+    $scope.$on('$destroy' , saveGridInfo);
+    window.onunload = saveGridInfo;
 
-  $scope.$on('restart', function () {
-      $scope.gridInfo = {};
-  });
+    $scope.$on('restart', function () { $scope.gridInfo = {}; });
 
 }]);

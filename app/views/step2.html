@@ -50,7 +50,13 @@
             </carousel3d-slide>
           </carousel3d>
 
-          <br>
+          <div>
+            <md-input-container>
+              <md-button ng-click="clearTable( gridInfo.wall.grid[wallIndex] )" class="md-fab" aria-label="Clear all grid">
+                <i class="material-icons">delete_forever</i>
+              </md-button>
+            </md-input-container>
+          </div>
 
           <div class="container">
             <div class="row">
@@ -63,7 +69,7 @@
                      dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
                      dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
                      dnd-containment="'.container'"
-                     dnd-model="eraser">delete</i>
+                     dnd-model="eraser">format_color_reset</i>
               </div>
 
               <div class="column column-clear"
@@ -149,9 +155,20 @@
                    dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
                    dnd-containment="'#step2'"
 
-                   dnd-model="RGBColor"></div>
+                   dnd-model="RGBColor">
+                <i class="material-icons">format_color_fill</i>
+              </div>
             </carousel3d-slide>
           </carousel3d>
+
+
+          <div>
+            <md-input-container>
+              <md-button ng-click="clearTable( gridInfo.flor.grid )" class="md-fab" aria-label="Clear all grid">
+                <i class="material-icons">delete_forever</i>
+              </md-button>
+            </md-input-container>
+          </div>
 
           <div class="container">
             <div class="row">
@@ -164,7 +181,7 @@
                    dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
                    dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
                    dnd-containment="'.container'"
-                   dnd-model="eraser">delete</i>
+                   dnd-model="eraser">format_color_reset</i>
               </div>
 
               <div class="column column-clear"
@@ -190,8 +207,26 @@
                    dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)">
                 <i ng-click="gridCls('row', gridInfo.flor.grid, index)" class="cursor-pointer material-icons">clear</i>
               </div>
-              <div class="column" ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#fefefe'}"
+              <div ng-if="stats.layout.flor === 'rectangular'" class="column" ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#fefefe'}"
                    ng-repeat="(i, col) in row"
+                   ng-class="stats.layout.flor + ' ' + col.hover"
+                   dnd-droppable="true"
+                   dnd-droppable-opts="{'layer': 'color' }"
+                   dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel, $event)"
+                   dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
+                   dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
+                   dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
+                   dnd-model="col"
+              >
+                <div class="column-info" ng-if="DEBUG_MOD">
+                  <div class="column-index">x<sup>{{index+1}}{{$index+1}}</sup><span ng-if="col.color">=</span></div>
+                  <div class="column-value">{{col.color}}</div>
+                </div>
+              </div>
+              <div ng-if="stats.layout.flor === 'diagonal'"
+                   ng-repeat="(i, col) in row"
+                   class="column"
+                   ng-style="rombusStyles(stats.tile_sizes.flor.width * gridInfo.zoom, index, i, col.color)"
                    ng-class="stats.layout.flor + ' ' + col.hover"
                    dnd-droppable="true"
                    dnd-droppable-opts="{'layer': 'color' }"
@@ -215,10 +250,8 @@
     </md-tabs>
 
     <md-input-container>
-      <md-button class="md-fab md-primary">
-        <a id="nextStep" ui-sref="step3">
+      <md-button ui-sref="step3" class="md-fab md-primary">
           <i class="material-icons">forward</i>
-        </a>
       </md-button>
     </md-input-container>
 

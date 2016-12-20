@@ -25,7 +25,7 @@
 
     <div ng-controller="appCtrl">
         <md-input-container>
-            <md-checkbox class="md-primary" id="debug" ng-model="DEBUG_MOD" ng-click="saveDebugMod($event)" aria-label="Debug trigger">
+            <md-checkbox class="md-primary" id="debug" ng-model="DEBUG_MOD" ng-change="checkMod(DEBUG_MOD)" aria-label="Debug trigger">
                 :DEBUG
             </md-checkbox>
         </md-input-container>

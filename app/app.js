@@ -19,14 +19,22 @@ angular.module('myApp', [
 
 }])
 
-.controller('appCtrl', ['$scope', '$rootScope', '$state', '$log', '$window',function ($scope, $rootScope, $state, $log, $window) {
-    $rootScope.DEBUG_MOD = false;
+.controller('appCtrl', ['$scope', '$rootScope', '$state', '$log', function ($scope, $rootScope, $state, $log) {
+    $rootScope.DEBUG_MOD = localStorage.getItem('debug') ? true : false;
+    $scope.checkMod = function (mod) {
+        if(mod){
+            localStorage.setItem('debug', true);
+        } else {
+            localStorage.removeItem('debug');
+        }
+    };
+
     $scope.restart = function () {
         if ($state.current.name !== 'step1') $state.go('step1');
         localStorage.removeItem('series');
         localStorage.removeItem('gridInfo');
         $rootScope.$broadcast('restart');
-        $log.log('restart');
+        if($rootScope.DEBUG_MOD) $log.log('restart');
     };
 
     $scope.links = [{"url": "step1", "name": "Назначение и размеры", "dependency": ""}, {"url": "step2", "name": "Разкладка плитки", "dependency": "series"}, {"url": "step3", "name": "Расчет стоимости", "dependency": "gridInfo"}];

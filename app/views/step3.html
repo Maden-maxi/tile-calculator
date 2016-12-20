@@ -1,5 +1,6 @@
 <div ng-controller="View3Ctrl">
     <md-content layout="column" layout-padding>
+        <div ng-if="!DEBUG_MOD">Turn Debug for showing text</div>
         <pre ng-if="DEBUG_MOD">
             {{gridData | json}}
         </pre>
