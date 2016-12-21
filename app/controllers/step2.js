@@ -112,6 +112,7 @@ angular.module('myApp.view2', ['ui.router'])
         dragstart: function () {
             if ($rootScope.DEBUG_MOD) $log.log('dragstart', arguments);
             $scope.dndVars.dragState = 'grabbing';
+
         },
         drag: function () {
             if ($rootScope.DEBUG_MOD) $log.log('drag', arguments);
