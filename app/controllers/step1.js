@@ -52,7 +52,8 @@ angular.module('myApp.view1', ['ui.router'])
                 case 2:
                     if( !localStorage.getItem('series') ) {
                         $scope.seriesData.appointment = initVal[newValue].appointment;
-                        $scope.seriesData.tiles.wall = undefined;
+                        if ($scope.seriesData.tiles)
+                            $scope.seriesData.tiles.wall = undefined;
                     }
                     break;
             }

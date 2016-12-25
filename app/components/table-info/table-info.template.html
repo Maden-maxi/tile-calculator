@@ -1,0 +1,20 @@
+<table ng-if="DEBUG_MOD">
+    <caption>Стена#{{$index+1}}</caption>
+    <tr>
+        <th>width</th><th>height</th><th>layout</th><th>tile sizes</th><th>rows</th><th>columns</th><th>area</th><th>colors</th>
+    </tr>
+    <tr>
+        <td>{{wall.width}}</td>
+        <td>{{stats.tiles.wall.height}}</td>
+        <td>{{stats.layout.wall}}</td>
+        <td>
+            <div ng-repeat="(key, value) in stats.tile_sizes.wall"><em>{{key}}</em>:<b>{{value}}px</b></div>
+        <td>{{  stats.tiles.wall.height / stats.tile_sizes.wall.height }}</td>
+        <td>{{ wall.width / stats.tile_sizes.wall.width }}</td>
+        <td>{{ gridInfo.wall.rows }}x{{ gridInfo.wall.columns[$index] }} = {{ gridInfo.wall.rows * gridInfo.wall.columns[$index] }}</td>
+        <td>
+            <div ng-if="stats.colors.wall" ng-repeat="color in stats.colors.wall" ng-style="{'background-color': color}">{{$index}}:{{color}}</div>
+        </td>
+    </tr>
+
+</table>

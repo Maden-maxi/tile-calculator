@@ -11,22 +11,12 @@ angular.module('myApp.view2', ['ui.router'])
     });
 }])
 
-.controller('View2Ctrl', [ '$scope', '$rootScope', 'Grid', '$log', function($scope, $rootScope, Grid, $log) {
-
-    $scope.rombusStyles = function (side, rowIndex, columnIndex, color) {
-        return {
-            'width': side + 'px',
-            'height': side + 'px',
-            'background-color': color || '#fefefe',
-            'margin-left': (side) / -2 + 'px',
-            'margin-top': (side) / -2 + 'px',
-            'top': ( (side) * Math.SQRT2 ) / (-rowIndex) + side + 'px',
-            'left':  ( (side) * Math.SQRT2 ) / (-columnIndex) + side + 'px'
-        };
-    };
+.controller('View2Ctrl', [ '$scope', '$rootScope', 'Grid', 'Rhombus', '$log', '$exceptionHandler', function($scope, $rootScope, Grid, Rhombus, $log, $exceptionHandler) {
 
     $scope.stats = JSON.parse(localStorage.getItem('series'));
+
     $scope.gridInfo = {};
+    $scope.Grid = Grid;
 
     if ( !localStorage.getItem('gridInfo') ) {
 
@@ -38,11 +28,19 @@ angular.module('myApp.view2', ['ui.router'])
                 rows: Math.ceil($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height),
                 columns: Math.ceil($scope.stats.tiles.flor.width / $scope.stats.tile_sizes.flor.width),
                 cellsCount: Math.ceil($scope.stats.tiles.flor.height / $scope.stats.tile_sizes.flor.height) * Math.ceil($scope.stats.tiles.flor.width / $scope.stats.tile_sizes.flor.width),
-                grid: []
+                grid: [],
+                isEmpty: true
             };
 
             //createTable($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
             Grid.build($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
+            if( $scope.stats.layout.flor === 'diagonal' ) {
+                $scope.gridInfo.flor.rhombus = new Rhombus(
+                    $scope.stats.tile_sizes.flor.width,
+                    $scope.gridInfo.flor.rows,
+                    $scope.gridInfo.flor.columns
+                );
+            }
             if ($rootScope.DEBUG_MOD) $log.log($scope.gridInfo.flor.grid);
         }
         if ( $scope.stats.appointment.wall == true ) {
@@ -51,7 +49,9 @@ angular.module('myApp.view2', ['ui.router'])
                 rows: Math.ceil(  $scope.stats.tiles.wall.height / $scope.stats.tile_sizes.wall.height ),
                 columns: [],
                 cellsCount: [],
-                grid: []
+                grid: [],
+                rhombus: [],
+                isEmpty: []
             };
 
             $scope.stats.tiles.wall.walls.forEach(function (element, index) {
@@ -61,22 +61,57 @@ angular.module('myApp.view2', ['ui.router'])
             $scope.gridInfo.wall.columns.forEach(function (element, index) {
                 $scope.gridInfo.wall.cellsCount[index] = $scope.gridInfo.wall.rows * element;
             });
-
-            for( var i = 0; i < $scope.gridInfo.wall.columns.length; i++ ){
-                $scope.gridInfo.wall.grid[i] = [];
-                //createTable($scope.gridInfo.wall.rows,$scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
-                Grid.build($scope.gridInfo.wall.rows,$scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
+            if( $scope.stats.layout.wall === 'diagonal' ) {
+                for( var i = 0; i < $scope.gridInfo.wall.columns.length; i++ ){
+                    $scope.gridInfo.wall.grid[i] = [];
+                    $scope.gridInfo.wall.rhombus[i] = [];
+                    $scope.gridInfo.wall.isEmpty[i] = true;
+                    Grid.build($scope.gridInfo.wall.rows, $scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
+                    $scope.gridInfo.wall.rhombus[i] = new Rhombus(
+                        $scope.stats.tile_sizes.wall.width,
+                        $scope.gridInfo.wall.rows,
+                        $scope.gridInfo.wall.columns[i]
+                    );
+                }
+            } else {
+                for( var i = 0; i < $scope.gridInfo.wall.columns.length; i++ ){
+                    $scope.gridInfo.wall.grid[i] = [];
+                    Grid.build($scope.gridInfo.wall.rows,$scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
+                }
             }
 
             if ($rootScope.DEBUG_MOD) $log.log( $scope.gridInfo.wall.grid );
         }
+
     } else {
         $scope.gridInfo = JSON.parse( localStorage.getItem('gridInfo') );
+        if($scope.gridInfo.wall && $scope.stats.layout.wall === 'diagonal'){
+            for( var i = 0; i < $scope.gridInfo.wall.columns.length; i++ ){
+                $scope.gridInfo.wall.rhombus[i] = new Rhombus(
+                    $scope.stats.tile_sizes.wall.width,
+                    $scope.gridInfo.wall.rows,
+                    $scope.gridInfo.wall.columns[i]
+                );
+            }
+        }
+        if($scope.gridInfo.flor && $scope.stats.layout.flor === 'diagonal'){
+            $scope.gridInfo.flor.rhombus = new Rhombus(
+                $scope.stats.tile_sizes.flor.width,
+                $scope.gridInfo.flor.rows,
+                $scope.gridInfo.flor.columns
+            );
+        }
+
+
     }
 
     $scope.showTab = function (tabId) {
         $scope.gridInfo.activeTab = tabId;
     };
+    /*
+    $scope.rhombus = new Rhombus( $scope.stats.tile_sizes.flor.width, $scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, 'px' );
+    $log.log($scope.rhombus.cellsHeadStyles(1, 'column'), 1);
+    */
 
     var carouselSettings = {
         perspective: 35,
@@ -121,53 +156,72 @@ angular.module('myApp.view2', ['ui.router'])
             if ($rootScope.DEBUG_MOD) $log.log('dragend', arguments);
             $scope.dndVars.dragState = 'grab';
 
-            if( $scope.dndVars.isOver ){
-                $scope.dropColor = dragmodel;
-                $scope.dndVars.isOver = false;
-                dropmodel.color = dragmodel;
-                dropmodel.hover = undefined;
-            } else {
+            if( !$scope.dndVars.isOver ) {
                 $scope.dropColor = 'transparent';
             }
         }
     };
 
     $scope.rectDrop = {
-        drop: function (dragmodel, model) {
+        drop: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) console.log('drop', arguments);
+            if( $scope.dndVars.isOver ){
+                $scope.dropColor = dragmodel;
+                $scope.dndVars.isOver = false;
+                dropmodel.color = dragmodel;
+                dropmodel.hover = undefined;
+            }
         },
         dragenter: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragenter', arguments);
-            dropmodel.hover = 'dragover';
-            $scope.dragActive = dropmodel;
-            $scope.dndVars.isOver = true;
+            if( angular.isDefined( dropmodel ) ){
+                dropmodel.hover = 'dragover';
+                $scope.dndVars.isOver = true;
+            }
         },
-        dragover: function () {
+        dragover: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragover', arguments);
+            $log.log('dragover', arguments);
         },
         dragleave: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) $log.log('dragleave', arguments);
-            dropmodel.hover = undefined;
-            $scope.dndVars.isOver = false;
+            if( angular.isDefined(dropmodel) ) {
+                dropmodel.hover = undefined;
+                $scope.dndVars.isOver = false;
+            }
         }
     };
 
     $scope.gridCov = {
-        dragenter: function (dropmodel, dragmodel, type, arr, typeIndex) {
+        dragenter: function (dropmodel, dragmodel, type, arr, typeIndex, rhombus) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
             $scope.dndVars.isOverColumn = true;
-            Grid.changeAxisParams(type, arr, typeIndex, {"hover": "dragover"});
+            if(rhombus){
+                Grid.changeAxisParamsRhombus(type, arr, typeIndex, {"hover": "dragover"}, rhombus)
+            } else {
+                Grid.changeAxisParams(type, arr, typeIndex, {"hover": "dragover"});
+            }
+
         },
-        dragleave: function (dropmodel, dragmodel, type, arr, typeIndex) {
+        dragleave: function (dropmodel, dragmodel, type, arr, typeIndex, rhombus) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
             $scope.dndVars.isOverColumn = false;
-            Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined});
+
+            if(rhombus){
+                Grid.changeAxisParamsRhombus(type, arr, typeIndex, {"hover": undefined}, rhombus)
+            } else {
+                Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined});
+            }
         },
-        drop: function (dropmodel, dragmodel, type, arr, typeIndex) {
+        drop: function (dropmodel, dragmodel, type, arr, typeIndex, rhombus) {
             if( $scope.dndVars.isOverColumn ) {
                 if ($rootScope.DEBUG_MOD) $log.log(arguments);
                 $scope.dndVars.isOverColumn = false;
-                Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined, "color": dragmodel});
+                if(rhombus){
+                    Grid.changeAxisParamsRhombus(type, arr, typeIndex, {"hover": undefined, "color": dragmodel}, rhombus)
+                } else {
+                    Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined, "color": dragmodel});
+                }
             }
         }
     };
@@ -177,9 +231,14 @@ angular.module('myApp.view2', ['ui.router'])
      * @param type string
      * @param arr array
      * @param typeIndex integer
+     * @param rhombus integer
      */
-    $scope.gridCls = function (type, arr, typeIndex) {
-        Grid.changeAxisParams(type, arr, typeIndex, {"color": undefined});
+    $scope.gridCls = function (type, arr, typeIndex, rhombus) {
+        if(rhombus){
+            Grid.changeAxisParamsRhombus( type, arr, typeIndex, {"color": undefined}, rhombus )
+        } else {
+            Grid.changeAxisParams( type, arr, typeIndex, {"color": undefined} );
+        }
     };
     /**
      * Change all Cells Params
@@ -190,12 +249,74 @@ angular.module('myApp.view2', ['ui.router'])
         Grid.changeAllCellsParams(object, params);
     };
     $scope.eraser = undefined;
-    
-    //TODO: Checking grids on empty
-    function gridIsEmpty() {
-        
-    }
 
+    //TODO: Checking grids on empty
+    if( $scope.gridInfo.flor ) {
+        $scope.florIsEmpty = function() {
+            return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color');
+        }
+    }
+    $scope.gridIsEmpty = function () {
+        var wallStatus, florStatus;
+        function wallIsEmpty() {
+            for ( var i = 0, status; i < $scope.gridInfo.wall.grid.length; i++) {
+                status = Grid.cellsIsEmpty($scope.gridInfo.wall.grid[i], 'color');
+                if( status ) return status; // is Empty = true
+            }
+            return false; // not Empty = false
+        }
+        if( angular.isDefined($scope.gridInfo.wall) ){
+            var wall = !angular.isDefined($scope.gridInfo.wall);
+            /*
+            var wallIsEmpty = function() {
+                for ( var i = 0, status; i < $scope.gridInfo.wall.grid.length; i++) {
+                    status = Grid.cellsIsEmpty($scope.gridInfo.wall.grid[i], 'color');
+                    if( status ) return status; // is Empty = true
+                }
+                return false; // not Empty = false
+            };
+            */
+            //$log.log(wallIsEmpty());
+        }
+        function florIsEmpty() {
+            return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color');
+        }
+        if( angular.isDefined($scope.gridInfo.flor) ){
+
+            var flor = !angular.isUndefined($scope.gridInfo.flor);
+            /*
+            var florIsEmpty = function() {
+                return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color') ? true : false;
+            };
+            */
+            //$log.log(florIsEmpty());
+        }
+
+        if( angular.isDefined($scope.gridInfo.wall) && !angular.isDefined($scope.gridInfo.flor) ) {
+            //$log.log('wall');
+            return wallIsEmpty();
+        }
+        if( angular.isDefined($scope.gridInfo.flor) && !angular.isDefined($scope.gridInfo.wall) ) {
+            //$log.log('flor');
+            return florIsEmpty();
+        }
+        if( angular.isDefined($scope.gridInfo.wall) && angular.isDefined($scope.gridInfo.flor) ) {
+            //$log.log('wall&flor');
+            $log.log( wallIsEmpty(), wallIsEmpty() );
+            return wallIsEmpty() && florIsEmpty();
+            /*
+            if( wallIsEmpty() == true && florIsEmpty() == true ) {
+                $log.log('wall');
+            } else {
+                $log.log('not empty');
+                return true
+            }
+            */
+        }
+
+    };
+    if( localStorage.getItem('gridInfo') )
+        $scope.gridIsEmpty();
     /**
      * Save grid state
      */
