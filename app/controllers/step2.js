@@ -11,7 +11,7 @@ angular.module('myApp.view2', ['ui.router'])
     });
 }])
 
-.controller('View2Ctrl', [ '$scope', '$rootScope', 'Grid', 'Rhombus', '$log', '$exceptionHandler', function($scope, $rootScope, Grid, Rhombus, $log, $exceptionHandler) {
+.controller('View2Ctrl', [ '$scope', '$rootScope', 'Grid', 'Rhombus', '$log', function($scope, $rootScope, Grid, Rhombus, $log) {
 
     $scope.stats = JSON.parse(localStorage.getItem('series'));
 
@@ -174,10 +174,8 @@ angular.module('myApp.view2', ['ui.router'])
         },
         dragenter: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragenter', arguments);
-            if( angular.isDefined( dropmodel ) ){
-                dropmodel.hover = 'dragover';
-                $scope.dndVars.isOver = true;
-            }
+            $scope.dndVars.isOver = true;
+            dropmodel.hover = 'dragover';
         },
         dragover: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragover', arguments);
@@ -185,10 +183,9 @@ angular.module('myApp.view2', ['ui.router'])
         },
         dragleave: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) $log.log('dragleave', arguments);
-            if( angular.isDefined(dropmodel) ) {
-                dropmodel.hover = undefined;
-                $scope.dndVars.isOver = false;
-            }
+            $scope.dndVars.isOver = false;
+            dropmodel.hover = undefined;
+
         }
     };
 
@@ -254,6 +251,15 @@ angular.module('myApp.view2', ['ui.router'])
     if( $scope.gridInfo.flor ) {
         $scope.florIsEmpty = function() {
             return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color');
+        }
+    }
+    if($scope.gridInfo.wall) {
+        $scope.wallIsEmpty = function () {
+            for ( var i = 0, status; i < $scope.gridInfo.wall.grid.length; i++) {
+                status = Grid.cellsIsEmpty($scope.gridInfo.wall.grid[i], 'color');
+                if( status ) return status; // is Empty = true
+            }
+            return false;
         }
     }
     $scope.gridIsEmpty = function () {
