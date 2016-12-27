@@ -293,7 +293,7 @@
                       </div>
                     </div>
                     <div class="grid__cell"
-                         ng-repeat="(index, column) in gridInfo.flor.grid[0]"
+                         ng-repeat="(index, column) in gridInfo.flor.rhombus.headCells('columns')"
                          ng-style="gridInfo.flor.rhombus.cellsHeadStyles(index, 'column')">
                       <div class="grid__inner"
                            ng-click="gridCls('column', gridInfo.flor.grid, index, 2)"
@@ -312,7 +312,7 @@
 
                 <div class="grid__right" ng-style="gridInfo.flor.rhombus.gridRight">
                   <div class="grid__head grid__head_cells" ng-style="{'width': gridInfo.flor.rhombus.side + gridInfo.flor.rhombus.unit }">
-                    <div class="grid__cell" ng-repeat="(index, row) in gridInfo.flor.grid"
+                    <div class="grid__cell" ng-repeat="(index, row) in gridInfo.flor.rhombus.headCells('rows')"
                          ng-style="gridInfo.flor.rhombus.cellsHeadStyles(index, 'row')">
                       <div class="grid__inner"
                            dnd-droppable="true"
