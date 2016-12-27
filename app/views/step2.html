@@ -1,7 +1,7 @@
 <div id="step2" ng-controller="View2Ctrl">
 
   <md-content layout="column" layout-padding>
-    <div layout-gt-sm="row">
+    <div ng-if="DEBUG_MOD" layout-gt-sm="row">
       <md-input-container class="md-block" flex-gt-sm="30">
         <label for="zoom">Zoom</label>
         <input type="number" id="zoom" ng-model="gridInfo.zoom">
@@ -157,64 +157,67 @@
                 </div>
             </div>
 
-          <div class="container" ng-if="stats.layout.wall == 'rectangular'">
-            <div class="row">
-              <div class="column column-clear-button"
-                   ng-style="{'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#cfecfe'}"
-                   >
-                  <i class="cursor-pointer material-icons"
-                     ng-class="dndVars.dragState"
-                     dnd-draggable="true"
-                     dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
-                     dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
-                     dnd-containment="'.container'"
-                     dnd-model="eraser">format_color_reset</i>
-              </div>
+          <div class="wrapper-rectangular" ng-if="stats.layout.wall == 'rectangular'" ng-style="{'height': stats.tile_sizes.wall.height * gridInfo.wall.rows + stats.tile_sizes.wall.height + 'px', 'width': stats.tile_sizes.wall.width * gridInfo.wall.columns[wallIndex] + stats.tile_sizes.wall.width + 'px', 'border': '1px solid #000'}">
+              <div class="container" ng-style="{'height': stats.tiles.wall.height + stats.tile_sizes.wall.height + 'px', 'width': stats.tile_sizes.wall.width  + stats.tiles.wall.walls[wallIndex].width + 'px', 'overflow': 'hidden', 'border': '1px solid #000' }">
+                <div class="row" ng-style="{'width': (stats.tile_sizes.wall.width * gridInfo.wall.columns[wallIndex] + gridInfo.wall.columns[wallIndex] * 2 + stats.tile_sizes.wall.width) + 'px' }">
+                  <div class="column column-clear-button"
+                       ng-style="{'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#cfecfe'}"
+                       >
+                      <i class="cursor-pointer material-icons"
+                         ng-class="dndVars.dragState"
+                         dnd-draggable="true"
+                         dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
+                         dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
+                         dnd-containment="'.container'"
+                         dnd-model="eraser">format_color_reset</i>
+                  </div>
 
-              <div class="column column-clear"
-                   ng-repeat="(index, row) in gridInfo.wall.grid[$index][0]"
-                   ng-style="{'width': stats.tile_sizes.wall.width* gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}"
-                   dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-model="gridInfo.wall.grid[wallIndex][index][0]">
-                  <i class="cursor-pointer material-icons" ng-click="gridCls('column', gridInfo.wall.grid[wallIndex], index)">clear</i>
-              </div>
-            </div>
-            <div class="row" ng-repeat="(index, row) in gridInfo.wall.grid[$index]">
-              <div class="column row-clear"
-                   ng-style="{'width': stats.tile_sizes.wall.width* gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}"
-                   dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)"
-                   dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)">
+                  <div class="column column-clear"
+                       ng-repeat="(index, row) in gridInfo.wall.grid[$index][0]"
+                       ng-style="{'width': stats.tile_sizes.wall.width* gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}"
+                       dnd-droppable="true"
+                       dnd-droppable-opts="{'layer': 'color' }"
+                       dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-model="gridInfo.wall.grid[wallIndex][index][0]">
+                      <i class="cursor-pointer material-icons" ng-click="gridCls('column', gridInfo.wall.grid[wallIndex], index)">clear</i>
+                  </div>
+                </div>
+                <div class="row"
+                     ng-style="{'width': stats.tile_sizes.wall.width * gridInfo.wall.columns[wallIndex] + stats.tile_sizes.wall.width + 'px' }"
+                     ng-repeat="(index, row) in gridInfo.wall.grid[$index]">
+                  <div class="column row-clear"
+                       ng-style="{'width': stats.tile_sizes.wall.width* gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}"
+                       dnd-droppable="true"
+                       dnd-droppable-opts="{'layer': 'color' }"
+                       dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)"
+                       dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.wall.grid[wallIndex], index)">
 
-                  <i class="cursor-pointer material-icons" ng-click="gridCls('row', gridInfo.wall.grid[wallIndex], index)">clear</i>
-              </div>
-              <div class="column" ng-style="{'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#fefefe'}"
-                   ng-repeat="(i, col) in row"
-                   ng-class="stats.layout.wall + ' ' + col.hover;"
-                   dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel)"
-                   dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
-                   dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
-                   dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
-                   dnd-model="col"
-              >
-                <div class="column-info" ng-if="DEBUG_MOD">
-                  <div class="column-index">x<sup>{{index+1}}{{$index+1}}</sup><span ng-if="col.color">=</span></div>
-                  <div class="column-value">{{col.color}}</div>
+                      <i class="cursor-pointer material-icons" ng-click="gridCls('row', gridInfo.wall.grid[wallIndex], index)">clear</i>
+                  </div>
+                  <div class="column" ng-style="{'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px', 'background-color': col.color || '#fefefe'}"
+                       ng-repeat="(i, col) in row"
+                       ng-class="stats.layout.wall + ' ' + col.hover;"
+                       dnd-droppable="true"
+                       dnd-droppable-opts="{'layer': 'color' }"
+                       dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel)"
+                       dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
+                       dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
+                       dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
+                       dnd-model="col"
+                  >
+                    <div class="column-info" ng-if="DEBUG_MOD">
+                      <div class="column-index">x<sup>{{index+1}}{{$index+1}}</sup><span ng-if="col.color">=</span></div>
+                      <div class="column-value">{{col.color}}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
           </div>
-
         </md-content>
       </md-tab>
       <md-tab ng-if="stats.tiles.flor && stats.appointment.flor" md-on-select="showTab(stats.tiles.wall.walls.length || 0)" label="Flor">
@@ -354,78 +357,62 @@
               </div>
           </div>
 
-          <div class="container" ng-if="stats.layout.flor == 'rectangular'">
-            <div class="row">
-              <div class="column column-clear-button"
-                   ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#cfecfe'}"
-                   >
-                <i class="cursor-pointer material-icons"
-                   ng-class="dndVars.dragState"
-                   dnd-draggable="true"
-                   dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
-                   dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
-                   dnd-containment="'.container'"
-                   dnd-model="eraser">format_color_reset</i>
-              </div>
+          <div class="wrapper-rectangular" ng-if="stats.layout.flor == 'rectangular'" ng-style="{'height': stats.tile_sizes.flor.height * gridInfo.flor.rows + stats.tile_sizes.flor.height + 'px', 'width': stats.tile_sizes.flor.width * gridInfo.flor.columns + stats.tile_sizes.flor.width + 'px', 'border': '1px solid #000'}">
+              <div class="container" ng-style="{'height': stats.tiles.flor.height + stats.tile_sizes.flor.height + 'px', 'width': stats.tile_sizes.flor.width  + stats.tiles.flor.width + 'px', 'overflow': 'hidden', 'border': '1px solid #000' }">
+                <div class="row" ng-style="{'width': (stats.tile_sizes.flor.width * gridInfo.flor.columns + gridInfo.flor.columns * 2 + stats.tile_sizes.flor.width) + 'px' }">
+                  <div class="column column-clear-button"
+                       ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#cfecfe'}"
+                       >
+                    <i class="cursor-pointer material-icons"
+                       ng-class="dndVars.dragState"
+                       dnd-draggable="true"
+                       dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
+                       dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel)"
+                       dnd-containment="'.container'"
+                       dnd-model="eraser">format_color_reset</i>
+                  </div>
 
-              <div class="column column-clear"
-                   ng-repeat="(index, row) in gridInfo.flor.grid[0]"
-                   ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}"
-                   dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
-                   dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
-                   dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
-                   dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
-                   dnd-model="gridInfo.flor.grid[index][0]">
-                <i ng-click="gridCls('column', gridInfo.flor.grid, index)" class="cursor-pointer material-icons">clear</i>
-              </div>
-            </div>
-            <div class="row" ng-repeat="(index, row) in gridInfo.flor.grid">
-              <div class="column row-clear"
-                   ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}" dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)"
-                   dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)"
-                   dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)"
-                   dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)">
-                <i ng-click="gridCls('row', gridInfo.flor.grid, index)" class="cursor-pointer material-icons">clear</i>
-              </div>
-              <div ng-if="stats.layout.flor === 'rectangular'" class="column" ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#fefefe'}"
-                   ng-repeat="(i, col) in row"
-                   ng-class="stats.layout.flor + ' ' + col.hover"
-                   dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel, $event)"
-                   dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
-                   dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
-                   dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
-                   dnd-model="col"
-              >
-                <div class="column-info" ng-if="DEBUG_MOD">
-                  <div class="column-index">x<sup>{{index+1}}{{$index+1}}</sup><span ng-if="col.color">=</span></div>
-                  <div class="column-value">{{col.color}}</div>
+                  <div class="column column-clear"
+                       ng-repeat="(index, row) in gridInfo.flor.grid[0]"
+                       ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}"
+                       dnd-droppable="true"
+                       dnd-droppable-opts="{'layer': 'color' }"
+                       dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
+                       dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
+                       dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
+                       dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index)"
+                       dnd-model="gridInfo.flor.grid[index][0]">
+                    <i ng-click="gridCls('column', gridInfo.flor.grid, index)" class="cursor-pointer material-icons">clear</i>
+                  </div>
+                </div>
+                <div class="row" ng-repeat="(index, row) in gridInfo.flor.grid" ng-style="{'width': (stats.tile_sizes.flor.width * gridInfo.flor.columns + gridInfo.flor.columns * 2 + stats.tile_sizes.flor.width) + 'px' }">
+                  <div class="column row-clear"
+                       ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#eeeeee'}" dnd-droppable="true"
+                       dnd-droppable-opts="{'layer': 'color' }"
+                       dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)"
+                       dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)"
+                       dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)"
+                       dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index)">
+                    <i ng-click="gridCls('row', gridInfo.flor.grid, index)" class="cursor-pointer material-icons">clear</i>
+                  </div>
+                  <div ng-if="stats.layout.flor === 'rectangular'" class="column" ng-style="{'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px', 'background-color': col.color || '#fefefe'}"
+                       ng-repeat="(i, col) in row"
+                       ng-class="stats.layout.flor + ' ' + col.hover"
+                       dnd-droppable="true"
+                       dnd-droppable-opts="{'layer': 'color' }"
+                       dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel, $event)"
+                       dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
+                       dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
+                       dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
+                       dnd-model="col"
+                  >
+                    <div class="column-info" ng-if="DEBUG_MOD">
+                      <div class="column-index">x<sup>{{index+1}}{{$index+1}}</sup><span ng-if="col.color">=</span></div>
+                      <div class="column-value">{{col.color}}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div ng-if="stats.layout.flor === 'diagonal'"
-                   ng-repeat="(i, col) in row"
-                   class="column"
-                   ng-style="rombusStyles(stats.tile_sizes.flor.width * gridInfo.zoom, index, i, col.color)"
-                   ng-class="stats.layout.flor + ' ' + col.hover"
-                   dnd-droppable="true"
-                   dnd-droppable-opts="{'layer': 'color' }"
-                   dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel, $event)"
-                   dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
-                   dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
-                   dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
-                   dnd-model="col"
-              >
-                <div class="column-info" ng-if="DEBUG_MOD">
-                  <div class="column-index">x<sup>{{index+1}}{{$index+1}}</sup><span ng-if="col.color">=</span></div>
-                  <div class="column-value">{{col.color}}</div>
-                </div>
-              </div>
-            </div>
           </div>
           <pre ng-if="DEBUG_MOD">{{gridInfo.flor.grid | json}}</pre>
 
@@ -442,6 +429,7 @@
     </md-input-container>
 
     <div class="ext-content" ng-if="DEBUG_MOD">
+        <pre>{{ stats | json}}</pre>
       <pre>{{gridInfo | json}}</pre>
     </div>
 

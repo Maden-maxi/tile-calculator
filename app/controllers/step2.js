@@ -197,8 +197,6 @@ angular.module('myApp.view2', ['ui.router'])
         },
         dragover: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragover', arguments);
-            $log.log('dragover', arguments);
-            $log.log($scope.dndVars.isOver);
         },
         dragleave: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) $log.log('dragleave', arguments);
