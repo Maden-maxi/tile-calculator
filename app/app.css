@@ -8,6 +8,10 @@
     display: inline-block;
     border: 1px solid #000;
     font-size: 0;
+    background-color: #cccccc;
+}
+.grid-wrapper{
+    background-color: #ffffff;
 }
 .grid__head{
     background-color: rgba(123, 131, 135, 0.62);

@@ -11,6 +11,24 @@ angular.module('myApp')
         this.rows = rows;
         this.columns = columns;
 
+
+
+        this.headCells = function (head) {
+            var headCells = [], i;
+            if(head == 'columns') {
+                for (i = 0; i < this.columns*2; i++){
+                    headCells[i] = i;
+                }
+                return headCells;
+            } else if( head == 'rows') {
+                for (i = 0; i < Math.ceil(this.rows*2.5); i++){
+                    headCells[i] = i;
+                }
+                return headCells;
+            }
+
+        };
+
         this.wiper = {
             "font-size": this.side / 3 + this.unit,
             "width": this.side - 1 + this.unit,
@@ -92,8 +110,9 @@ angular.module('myApp')
             "position": "absolute",
             "top": 0,
             "left": 0,
-            "width": "100%",
-            "height": "100%"
+            "width": "75%",
+            "height": "75%",
+            "margin": "10% 0 0 10%"
         };
     }
     return Rhombus;

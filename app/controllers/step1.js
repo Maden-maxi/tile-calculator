@@ -12,12 +12,14 @@ angular.module('myApp.view1', ['ui.router'])
 }])
 
 .controller('View1Ctrl', [ '$scope', '$rootScope', '$state', 'Series', '$log', function($scope, $rootScope, $state, Series, $log ) {
-
+    /**
+     * if first step fill early go to step 2
+     */
     if( localStorage.getItem('gridInfo') )
         $state.go('step2');
 
     $scope.regex = '^\\d+$'; // Validate numbers
-    $scope.rangeSizes = {min: 100, max: 1000};
+    $scope.rangeSizes = {min: 100, max: 1000}; // Range
     $scope.gutterSizes = [ 1, 1.5, 2, 2.5, 3, 3.5, 4];
     $scope.seriesData = {};
 

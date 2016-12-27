@@ -7,12 +7,19 @@ angular.module('myApp')
              * @param columns int
              * @param object array
              */
-            build: function (rows, columns, object) {
-                for (var row = 0; row < rows; row++ ) {
-                    object[row] = [];
-                    for ( var column = 0; column < columns; column++ ) object[row][column] = {id: column};
+            build: function (rows, columns, object, rhombus) {
+                var row, column;
+                if(rhombus === true){
+                    for (row = 0; row < Math.ceil( rows*2.5 ); row++ ) {
+                        object[row] = [];
+                        for ( column = 0; column < columns; column++ ) object[row][column] = {id: column};
+                    }
+                } else {
+                    for (row = 0; row < rows; row++ ) {
+                        object[row] = [];
+                        for ( column = 0; column < columns; column++ ) object[row][column] = {id: column};
+                    }
                 }
-
             },
             /**
              * Change params in all cells

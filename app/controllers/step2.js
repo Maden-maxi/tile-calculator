@@ -16,12 +16,14 @@ angular.module('myApp.view2', ['ui.router'])
     $scope.stats = JSON.parse(localStorage.getItem('series'));
 
     $scope.gridInfo = {};
-    $scope.Grid = Grid;
 
+    // if grid we no have information about grid we build it
     if ( !localStorage.getItem('gridInfo') ) {
 
         $scope.gridInfo.activeTab = '0';
         $scope.gridInfo.zoom = 1;
+
+        //build grid for flor
 
         if( $scope.stats.appointment.flor == true ) {
             $scope.gridInfo.flor = {
@@ -35,14 +37,19 @@ angular.module('myApp.view2', ['ui.router'])
             //createTable($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
             Grid.build($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
             if( $scope.stats.layout.flor === 'diagonal' ) {
+                Grid.build($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid, true);
                 $scope.gridInfo.flor.rhombus = new Rhombus(
                     $scope.stats.tile_sizes.flor.width,
                     $scope.gridInfo.flor.rows,
                     $scope.gridInfo.flor.columns
                 );
+            } else {
+                Grid.build($scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, $scope.gridInfo.flor.grid);
             }
             if ($rootScope.DEBUG_MOD) $log.log($scope.gridInfo.flor.grid);
         }
+
+        //build grid for walls
         if ( $scope.stats.appointment.wall == true ) {
 
             $scope.gridInfo.wall = {
@@ -66,7 +73,7 @@ angular.module('myApp.view2', ['ui.router'])
                     $scope.gridInfo.wall.grid[i] = [];
                     $scope.gridInfo.wall.rhombus[i] = [];
                     $scope.gridInfo.wall.isEmpty[i] = true;
-                    Grid.build($scope.gridInfo.wall.rows, $scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i]);
+                    Grid.build($scope.gridInfo.wall.rows, $scope.gridInfo.wall.columns[i], $scope.gridInfo.wall.grid[i], true);
                     $scope.gridInfo.wall.rhombus[i] = new Rhombus(
                         $scope.stats.tile_sizes.wall.width,
                         $scope.gridInfo.wall.rows,
@@ -84,7 +91,9 @@ angular.module('myApp.view2', ['ui.router'])
         }
 
     } else {
+        //else if we have grid we load from localStorage information about it
         $scope.gridInfo = JSON.parse( localStorage.getItem('gridInfo') );
+        //if layout diagonal we create styles for Rhombus grid for walls
         if($scope.gridInfo.wall && $scope.stats.layout.wall === 'diagonal'){
             for( var i = 0; i < $scope.gridInfo.wall.columns.length; i++ ){
                 $scope.gridInfo.wall.rhombus[i] = new Rhombus(
@@ -94,6 +103,7 @@ angular.module('myApp.view2', ['ui.router'])
                 );
             }
         }
+        //if layout diagonal we create styles for Rhombus grid for flor
         if($scope.gridInfo.flor && $scope.stats.layout.flor === 'diagonal'){
             $scope.gridInfo.flor.rhombus = new Rhombus(
                 $scope.stats.tile_sizes.flor.width,
@@ -105,14 +115,12 @@ angular.module('myApp.view2', ['ui.router'])
 
     }
 
+    // switch between tabs
     $scope.showTab = function (tabId) {
         $scope.gridInfo.activeTab = tabId;
     };
-    /*
-    $scope.rhombus = new Rhombus( $scope.stats.tile_sizes.flor.width, $scope.gridInfo.flor.rows, $scope.gridInfo.flor.columns, 'px' );
-    $log.log($scope.rhombus.cellsHeadStyles(1, 'column'), 1);
-    */
 
+    //common carousel settings
     var carouselSettings = {
         perspective: 35,
         startSlide: 0,
@@ -124,25 +132,31 @@ angular.module('myApp.view2', ['ui.router'])
         controls: true
     };
 
+    // carousel settings for wall
     if( $scope.stats.tile_sizes.wall ){
         carouselSettings.width = ( $scope.stats.tile_sizes.wall.width * $scope.gridInfo.zoom  ) || 360;
         carouselSettings.height = ( $scope.stats.tile_sizes.wall.height * $scope.gridInfo.zoom ) || 240;
         $scope.carouselColorsWall = carouselSettings;
     }
 
+    // carousel settings for flor
     if( $scope.stats.tile_sizes.flor ) {
         carouselSettings.width = $scope.stats.tile_sizes.flor.width * $scope.gridInfo.zoom || 360;
         carouselSettings.height = $scope.stats.tile_sizes.flor.height * $scope.gridInfo.zoom || 240;
         $scope.carouselColorsFlor = carouselSettings;
     }
 
-    //drag
+    //drag vars. They describe state rectangle with color
     $scope.dndVars = {
         isOver: false,
         isOverColumn: false,
         dragState: 'grab'
     };
 
+    /**
+     * Event handlers for rectangle with color
+     * @type {{dragstart: $scope.rectColor.dragstart, drag: $scope.rectColor.drag, dragend: $scope.rectColor.dragend}}
+     */
     $scope.rectColor = {
         dragstart: function () {
             if ($rootScope.DEBUG_MOD) $log.log('dragstart', arguments);
@@ -162,6 +176,10 @@ angular.module('myApp.view2', ['ui.router'])
         }
     };
 
+    /**
+     * Event handlers for cells in grid
+     * @type {{drop: $scope.rectDrop.drop, dragenter: $scope.rectDrop.dragenter, dragover: $scope.rectDrop.dragover, dragleave: $scope.rectDrop.dragleave}}
+     */
     $scope.rectDrop = {
         drop: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) console.log('drop', arguments);
@@ -180,6 +198,7 @@ angular.module('myApp.view2', ['ui.router'])
         dragover: function ( dropmodel, dragmodel ) {
             if ($rootScope.DEBUG_MOD) $log.log('dragover', arguments);
             $log.log('dragover', arguments);
+            $log.log($scope.dndVars.isOver);
         },
         dragleave: function (dropmodel, dragmodel) {
             if ($rootScope.DEBUG_MOD) $log.log('dragleave', arguments);
@@ -189,6 +208,10 @@ angular.module('myApp.view2', ['ui.router'])
         }
     };
 
+    /**
+     * Event handlers for grid headers for cover cells on x and y
+     * @type {{dragenter: $scope.gridCov.dragenter, dragleave: $scope.gridCov.dragleave, drop: $scope.gridCov.drop}}
+     */
     $scope.gridCov = {
         dragenter: function (dropmodel, dragmodel, type, arr, typeIndex, rhombus) {
             if ($rootScope.DEBUG_MOD) $log.log(arguments);
@@ -247,7 +270,7 @@ angular.module('myApp.view2', ['ui.router'])
     };
     $scope.eraser = undefined;
 
-    //TODO: Checking grids on empty
+    // Check grids if is Empty
     if( $scope.gridInfo.flor ) {
         $scope.florIsEmpty = function() {
             return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color');
@@ -262,67 +285,7 @@ angular.module('myApp.view2', ['ui.router'])
             return false;
         }
     }
-    $scope.gridIsEmpty = function () {
-        var wallStatus, florStatus;
-        function wallIsEmpty() {
-            for ( var i = 0, status; i < $scope.gridInfo.wall.grid.length; i++) {
-                status = Grid.cellsIsEmpty($scope.gridInfo.wall.grid[i], 'color');
-                if( status ) return status; // is Empty = true
-            }
-            return false; // not Empty = false
-        }
-        if( angular.isDefined($scope.gridInfo.wall) ){
-            var wall = !angular.isDefined($scope.gridInfo.wall);
-            /*
-            var wallIsEmpty = function() {
-                for ( var i = 0, status; i < $scope.gridInfo.wall.grid.length; i++) {
-                    status = Grid.cellsIsEmpty($scope.gridInfo.wall.grid[i], 'color');
-                    if( status ) return status; // is Empty = true
-                }
-                return false; // not Empty = false
-            };
-            */
-            //$log.log(wallIsEmpty());
-        }
-        function florIsEmpty() {
-            return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color');
-        }
-        if( angular.isDefined($scope.gridInfo.flor) ){
 
-            var flor = !angular.isUndefined($scope.gridInfo.flor);
-            /*
-            var florIsEmpty = function() {
-                return Grid.cellsIsEmpty($scope.gridInfo.flor.grid, 'color') ? true : false;
-            };
-            */
-            //$log.log(florIsEmpty());
-        }
-
-        if( angular.isDefined($scope.gridInfo.wall) && !angular.isDefined($scope.gridInfo.flor) ) {
-            //$log.log('wall');
-            return wallIsEmpty();
-        }
-        if( angular.isDefined($scope.gridInfo.flor) && !angular.isDefined($scope.gridInfo.wall) ) {
-            //$log.log('flor');
-            return florIsEmpty();
-        }
-        if( angular.isDefined($scope.gridInfo.wall) && angular.isDefined($scope.gridInfo.flor) ) {
-            //$log.log('wall&flor');
-            $log.log( wallIsEmpty(), wallIsEmpty() );
-            return wallIsEmpty() && florIsEmpty();
-            /*
-            if( wallIsEmpty() == true && florIsEmpty() == true ) {
-                $log.log('wall');
-            } else {
-                $log.log('not empty');
-                return true
-            }
-            */
-        }
-
-    };
-    if( localStorage.getItem('gridInfo') )
-        $scope.gridIsEmpty();
     /**
      * Save grid state
      */

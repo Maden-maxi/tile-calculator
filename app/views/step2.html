@@ -80,7 +80,7 @@
                                 </div>
                             </div>
                             <div class="grid__cell"
-                                 ng-repeat="(index, column) in gridInfo.wall.grid[wallIndex][0]"
+                                 ng-repeat="(index, column) in gridInfo.wall.rhombus[wallIndex].headCells('columns')"
                                  ng-style="gridInfo.wall.rhombus[wallIndex].cellsHeadStyles(index, 'column')">
                                 <div class="grid__inner"
                                      ng-click="gridCls('column', gridInfo.wall.grid[wallIndex], index, 2)"
@@ -93,13 +93,14 @@
                                     <i ng-style="{'font-size': gridInfo.wall.rhombus[wallIndex].wiper['font-size']}" class="cursor-pointer material-icons">clear</i>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
                     <div class="grid__right" ng-style="gridInfo.wall.rhombus[wallIndex].gridRight">
                         <div class="grid__head grid__head_cells" ng-style="{'width': gridInfo.wall.rhombus[wallIndex].side + gridInfo.wall.rhombus[wallIndex].unit }">
                             <div class="grid__cell"
-                                 ng-repeat="(index, row) in gridInfo.wall.grid[wallIndex]"
+                                 ng-repeat="(index, row) in gridInfo.wall.rhombus[wallIndex].headCells('rows')"
                                  ng-style="gridInfo.wall.rhombus[wallIndex].cellsHeadStyles(index, 'row')"
                                  dnd-droppable="true"
                                  dnd-droppable-opts="{'layer': 'color' }"
@@ -128,14 +129,18 @@
                                          ng-repeat="(i, col) in row"
                                          ng-class="col.hover"
                                          ng-style="gridInfo.wall.rhombus[wallIndex].cellStyles( col.color )"
-                                         dnd-droppable="true"
-                                         dnd-droppable-opts="{'layer': 'color' }"
-                                         dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel)"
-                                         dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
-                                         dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
-                                         dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
-                                         dnd-model="col">
-                                        <div class="grid__inner" ng-style="gridInfo.wall.rhombus[wallIndex].cellInnerStyles">{{index + ':' + col.id}}</div>
+                                         >
+                                        <div class="grid__inner"
+                                             ng-style="gridInfo.wall.rhombus[wallIndex].cellInnerStyles"
+                                             dnd-droppable="true"
+                                             dnd-droppable-opts="{'layer': 'color' }"
+                                             dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel)"
+                                             dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
+                                             dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
+                                             dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
+                                             dnd-model="col">
+                                            <span ng-if="DEBUG_MOD">{{index + ':' + col.id}}</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <!--
@@ -289,15 +294,16 @@
                     </div>
                     <div class="grid__cell"
                          ng-repeat="(index, column) in gridInfo.flor.grid[0]"
-                         ng-style="gridInfo.flor.rhombus.cellsHeadStyles(index, 'column')"
-                         dnd-droppable="true"
-                         dnd-droppable-opts="{'layer': 'color' }"
-                         dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
-                         dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
-                         dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
-                         dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
-                         dnd-model="gridInfo.flor.grid[index][0]">
-                      <div class="grid__inner" ng-click="gridCls('column', gridInfo.flor.grid, index, 2)">
+                         ng-style="gridInfo.flor.rhombus.cellsHeadStyles(index, 'column')">
+                      <div class="grid__inner"
+                           ng-click="gridCls('column', gridInfo.flor.grid, index, 2)"
+                           dnd-droppable="true"
+                           dnd-droppable-opts="{'layer': 'color' }"
+                           dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
+                           dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
+                           dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
+                           dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'column', gridInfo.flor.grid, index, 2)"
+                           dnd-model="gridInfo.flor.grid[index][0]">
                           <i ng-style="{'font-size': gridInfo.flor.rhombus.wiper['font-size']}" class="cursor-pointer material-icons">clear</i>
                       </div>
                     </div>
@@ -307,14 +313,14 @@
                 <div class="grid__right" ng-style="gridInfo.flor.rhombus.gridRight">
                   <div class="grid__head grid__head_cells" ng-style="{'width': gridInfo.flor.rhombus.side + gridInfo.flor.rhombus.unit }">
                     <div class="grid__cell" ng-repeat="(index, row) in gridInfo.flor.grid"
-                         ng-style="gridInfo.flor.rhombus.cellsHeadStyles(index, 'row')"
-                         dnd-droppable="true"
-                         dnd-droppable-opts="{'layer': 'color' }"
-                         dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)"
-                         dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)"
-                         dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)"
-                         dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)">
-                      <div class="grid__inner">
+                         ng-style="gridInfo.flor.rhombus.cellsHeadStyles(index, 'row')">
+                      <div class="grid__inner"
+                           dnd-droppable="true"
+                           dnd-droppable-opts="{'layer': 'color' }"
+                           dnd-on-drop="gridCov.drop($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)"
+                           dnd-on-dragenter="gridCov.dragenter($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)"
+                           dnd-on-dragover="gridCov.dragover($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)"
+                           dnd-on-dragleave="gridCov.dragleave($dropmodel, $dragmodel, 'row', gridInfo.flor.grid, index, 2)">
                           <i ng-style="{'font-size': gridInfo.flor.rhombus.wiper['font-size']}" class="cursor-pointer material-icons" ng-click="gridCls('row', gridInfo.flor.grid, index, 2)">clear</i>
                       </div>
                     </div>
@@ -327,15 +333,18 @@
                            ng-style="gridInfo.flor.rhombus.rowStyles(index)">
                         <div class="grid__cell"
                              ng-repeat="(i, col) in row" ng-style="gridInfo.flor.rhombus.cellStyles(col.color)"
-                             ng-class="col.hover"
-                             dnd-droppable="true"
-                             dnd-droppable-opts="{ 'layer': 'color' }"
-                             dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel)"
-                             dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
-                             dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
-                             dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
-                             dnd-model="col">
-                          <div class="grid__inner" ng-style="gridInfo.flor.rhombus.cellInnerStyles">{{ col }}</div>
+                             ng-class="col.hover">
+                          <div class="grid__inner"
+                               ng-style="gridInfo.flor.rhombus.cellInnerStyles"
+                               dnd-droppable="true"
+                               dnd-droppable-opts="{ 'layer': 'color' }"
+                               dnd-on-drop="rectDrop.drop($dropmodel, $dragmodel)"
+                               dnd-on-dragenter="rectDrop.dragenter($dropmodel, $dragmodel)"
+                               dnd-on-dragover="rectDrop.dragover($dropmodel, $dragmodel)"
+                               dnd-on-dragleave="rectDrop.dragleave($dropmodel, $dragmodel)"
+                               dnd-model="col">
+                              <span ng-if="DEBUG_MOD">{{ col }}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -426,7 +435,7 @@
 
 
       <div ng-show="!wallIsEmpty() && !florIsEmpty()">not empty</div>
-    <md-input-container ng-show="!gridIsEmpty() && !florIsEmpty()">
+    <md-input-container ng-show="!wallIsEmpty() && !florIsEmpty()">
       <md-button ui-sref="step3" class="md-fab md-primary">
           <i class="material-icons">forward</i>
       </md-button>
