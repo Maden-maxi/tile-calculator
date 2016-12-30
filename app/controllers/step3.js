@@ -108,7 +108,6 @@ angular.module('myApp.view3', ['ui.router'])
         angular.forEach($scope.tableState.dataTable, function (value, key, dt ) {
 
             if(dt[key].prices.length > 0){
-                $log.log(dt[key].prices.length);
                 dt[key]['sum'] = value.prices[0] * value.prices.length;
                 dt[key]['quantity'] = value.prices.length;
                 dt[key]['price'] = value.prices[0];

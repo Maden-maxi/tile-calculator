@@ -261,7 +261,7 @@
                 <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.flor">
                   <div class="carousel-item"  ng-style="{'background-color': RGBColor.color, 'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px'}"
                        ng-class="dndVars.dragState"
-                       ng-dblclick="changeCellsGridParams(gridInfo.flor.grid, {'color': RGBColor})">
+                       ng-dblclick="changeCellsGridParams(gridInfo.flor.grid, {'color': RGBColor.color})">
                     <i class="material-icons"
                        ng-click = "click(!$dragged && !$resized && !$rotated, $dropmodel)"
                        dnd-draggable="true"
