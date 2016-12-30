@@ -11,7 +11,7 @@ angular.module('myApp.view2', ['ui.router'])
     });
 }])
 
-.controller('View2Ctrl', [ '$scope', '$rootScope', 'Grid', 'Rhombus', '$log', function($scope, $rootScope, Grid, Rhombus, $log) {
+.controller('View2Ctrl', [ '$scope', '$rootScope', 'Series', 'Grid', 'Rhombus', '$log', function($scope, $rootScope, Series, Grid, Rhombus, $log) {
 
     $scope.stats = JSON.parse(localStorage.getItem('series'));
 
@@ -186,7 +186,8 @@ angular.module('myApp.view2', ['ui.router'])
             if( $scope.dndVars.isOver ){
                 $scope.dropColor = dragmodel;
                 $scope.dndVars.isOver = false;
-                dropmodel.color = dragmodel;
+                dropmodel.color = dragmodel.color;
+                dropmodel.price = dragmodel.price;
                 dropmodel.hover = undefined;
             }
         },
@@ -202,7 +203,6 @@ angular.module('myApp.view2', ['ui.router'])
             if ($rootScope.DEBUG_MOD) $log.log('dragleave', arguments);
             $scope.dndVars.isOver = false;
             dropmodel.hover = undefined;
-
         }
     };
 
@@ -236,9 +236,9 @@ angular.module('myApp.view2', ['ui.router'])
                 if ($rootScope.DEBUG_MOD) $log.log(arguments);
                 $scope.dndVars.isOverColumn = false;
                 if(rhombus){
-                    Grid.changeAxisParamsRhombus(type, arr, typeIndex, {"hover": undefined, "color": dragmodel}, rhombus)
+                    Grid.changeAxisParamsRhombus(type, arr, typeIndex, {"hover": undefined, "color": dragmodel.color, "price": dragmodel.price}, rhombus)
                 } else {
-                    Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined, "color": dragmodel});
+                    Grid.changeAxisParams(type, arr, typeIndex, {"hover": undefined, "color": dragmodel.color, "price": dragmodel.price});
                 }
             }
         }
@@ -253,9 +253,9 @@ angular.module('myApp.view2', ['ui.router'])
      */
     $scope.gridCls = function (type, arr, typeIndex, rhombus) {
         if(rhombus){
-            Grid.changeAxisParamsRhombus( type, arr, typeIndex, {"color": undefined}, rhombus )
+            Grid.changeAxisParamsRhombus( type, arr, typeIndex, {"color": undefined, "price": undefined}, rhombus )
         } else {
-            Grid.changeAxisParams( type, arr, typeIndex, {"color": undefined} );
+            Grid.changeAxisParams( type, arr, typeIndex, {"color": undefined, "price": undefined} );
         }
     };
     /**
@@ -266,7 +266,7 @@ angular.module('myApp.view2', ['ui.router'])
     $scope.changeCellsGridParams = function (object, params) {
         Grid.changeAllCellsParams(object, params);
     };
-    $scope.eraser = undefined;
+    $scope.eraser = {"color": undefined, "price": undefined};
 
     // Check grids if is Empty
     if( $scope.gridInfo.flor ) {

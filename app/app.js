@@ -31,8 +31,9 @@ angular.module('myApp', [
 
     $scope.restart = function () {
         if ($state.current.name !== 'step1') $state.go('step1');
-        localStorage.removeItem('series');
-        localStorage.removeItem('gridInfo');
+        //localStorage.removeItem('series');
+        //localStorage.removeItem('gridInfo');
+        localStorage.clear();
         $rootScope.$broadcast('restart');
         if($rootScope.DEBUG_MOD) $log.log('restart');
     };

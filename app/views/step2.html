@@ -46,9 +46,9 @@
                           ng-model="stats.colors.wall">
                 <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.wall">
                   <div class="carousel-item"
-                       ng-style="{'background-color': RGBColor, 'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px'}"
+                       ng-style="{'background-color': RGBColor.color, 'width': stats.tile_sizes.wall.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.wall.height * gridInfo.zoom + 'px'}"
                        ng-class="dndVars.dragState"
-                       ng-dblclick="changeCellsGridParams(gridInfo.wall.grid[wallIndex], {'color': RGBColor})">
+                       ng-dblclick="changeCellsGridParams(gridInfo.wall.grid[wallIndex], {'color': RGBColor.color})">
                     <i class="material-icons"
                        dnd-draggable="true"
                        dnd-draggable-opts="{'layer': 'color', 'helper': 'clone', 'useAsPoint': true}"
@@ -57,6 +57,7 @@
                        dnd-on-dragend="rectColor.dragend($dropmodel,$dragmodel, $dragged)"
                        dnd-containment="'#step2'"
                        dnd-model="RGBColor">format_color_fill</i>
+
                   </div>
                 </carousel3d-slide>
               </carousel3d>
@@ -247,7 +248,7 @@
           <div layout="row">
             <div flex="10">
               <md-input-container>
-                <md-button ng-click="changeCellsGridParams(gridInfo.flor.grid, {'color': undefined})" class="md-fab" aria-label="Clear all grid">
+                <md-button ng-click="changeCellsGridParams(gridInfo.flor.grid, {'color': undefined, 'price': undefined})" class="md-fab" aria-label="Clear all grid">
                   <i class="material-icons">delete_forever</i>
                 </md-button>
               </md-input-container>
@@ -258,7 +259,7 @@
                           options="carouselColorsFlor"
                           ng-model="stats.colors.flor">
                 <carousel3d-slide class="carousel-cell" ng-repeat="RGBColor in stats.colors.flor">
-                  <div class="carousel-item"  ng-style="{'background-color': RGBColor, 'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px'}"
+                  <div class="carousel-item"  ng-style="{'background-color': RGBColor.color, 'width': stats.tile_sizes.flor.width * gridInfo.zoom + 'px', 'height': stats.tile_sizes.flor.height * gridInfo.zoom + 'px'}"
                        ng-class="dndVars.dragState"
                        ng-dblclick="changeCellsGridParams(gridInfo.flor.grid, {'color': RGBColor})">
                     <i class="material-icons"
@@ -429,7 +430,7 @@
     </md-input-container>
 
     <div class="ext-content" ng-if="DEBUG_MOD">
-        <pre>{{ stats | json}}</pre>
+
       <pre>{{gridInfo | json}}</pre>
     </div>
 

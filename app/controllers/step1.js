@@ -82,5 +82,4 @@ angular.module('myApp.view1', ['ui.router'])
         $scope.seriesData = {"gutter": 3};
     });
 
-    //Series.save( $scope, !angular.isUndefined( $scope.seriesData.id_series ), 'series', $scope.seriesData );
 }]);

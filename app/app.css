@@ -1,4 +1,27 @@
 /* app css stylesheet */
+table.score{
+    background-color: #f5ffb1;
+    text-align: center;
+}
+.score caption{
+    background-color: #5aff4f;
+    border: 1px solid #000;
+    font-style: italic;
+    font-weight: bold;
+}
+.score th{
+    cursor: pointer;
+    border: 1px solid #000;
+    background-color: #60b6ff;
+}
+.score tfoot{
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #4037ff;
+}
+.active{
+    background-color: #ff444e !important;
+}
 *{
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
