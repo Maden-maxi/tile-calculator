@@ -11,7 +11,10 @@ angular.module('myApp.view2', ['ui.router'])
     });
 }])
 
-.controller('View2Ctrl', [ '$scope', '$rootScope', 'Series', 'Grid', 'Rhombus', '$log', function($scope, $rootScope, Series, Grid, Rhombus, $log) {
+.controller('View2Ctrl', [ '$scope', '$rootScope', '$state', 'Series', 'Grid', 'Rhombus', '$log', function($scope, $rootScope, $state, Series, Grid, Rhombus, $log) {
+
+    if( localStorage.getItem('score') )
+        $state.go('step3');
 
     $scope.stats = JSON.parse(localStorage.getItem('series'));
 

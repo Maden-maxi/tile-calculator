@@ -12,7 +12,7 @@ angular.module('myApp.view3', ['ui.router'])
 
 }])
 
-.controller('View3Ctrl', [ '$scope', '$rootScope', 'Series', '$log', function($scope, $rootScope, Series, $log) {
+.controller('View3Ctrl', [ '$scope', function($scope) {
 
     /**
      *
