@@ -12,6 +12,10 @@
     "angular-mocks": "~1.5.0",
     "html5-boilerplate": "^5.3.0",
     "angular-material": "^1.1.1",
-    "angular-ui-mask": "^1.8.7"
+    "angular-ui-mask": "^1.8.7",
+    "angular-ui-router": "^0.3.2",
+    "flickity": "^2.0.5",
+    "angular-dnd-module": "https://github.com/Tuch/angular-dnd.git#^0.1.24",
+    "angular-carousel-3d": "https://github.com/Wlada/angular-carousel-3d.git"
   }
 }

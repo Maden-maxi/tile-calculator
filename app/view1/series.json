@@ -2,19 +2,19 @@
   {
     "id_series": 0,
     "type_series": 0,
-    "tilesUse": {"walls": true, "flor": true},
+    "appointment": {"walls": true, "flor": true},
     "layout": {"walls": "rectangular", "flor": "rectangular"}
   },
   {
     "id_series": 1,
     "type_series": 1,
-    "tilesUse": {"walls": true, "flor": false},
+    "appointment": {"walls": true},
     "layout": {"walls": "rectangular"}
   },
   {
     "id_series": 2,
     "type_series": 2,
-    "tilesUse": {"walls": false, "flor": true},
+    "appointment": { "flor": true },
     "layout": {"flor": "rectangular"}
   }
 ]

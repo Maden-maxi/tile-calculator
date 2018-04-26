@@ -1,0 +1,37 @@
+<div ng-controller="View3Ctrl">
+    <md-content layout="column" layout-padding>
+        <div ng-if="!DEBUG_MOD">Turn Debug for showing text</div>
+        <pre ng-if="DEBUG_MOD">
+            {{gridData | json}}
+        </pre>
+
+        <table class="score">
+            <caption>Счет</caption>
+            <thead>
+                <tr>
+                    <th ng-repeat="(key, head) in tableState.tableHeaders"
+                        ng-click=" (head.sortParam != 'size') ? sortColumnBy(head.sortParam, head.id) : false" ng-class="{'active': head.isActive ? 'active' : ''}">
+                        <span ng-if="head.title == '#'"><i class="material-icons">format_list_numbered</i></span>
+                        <span ng-if="head.title != '#'">{{head.title}}</span>
+                        <i ng-if="head.sortParam != 'size'" class="material-icons">{{head.arrowState}}</i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in tableState.tableOfData | orderBy: tableState.sortVar">
+                    <td>{{data.id+1}}</td>
+                    <td ng-style="{'background-color': data.color, 'width': data.sizes.width+'px', 'height': data.sizes.height+'px'}">{{data.color}}</td>
+                    <td>{{data.price | currency: "₴" }}</td>
+                    <td>{{data.size}}</td>
+                    <td>{{data.quantity}}</td>
+                    <td>{{data.sum | currency: "₴" }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="{{tableState.tableHeaders.length-1}}">Итог:</td><td>{{tableState.sum | currency: "₴"}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </md-content>
+</div>

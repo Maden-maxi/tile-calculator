@@ -1,53 +1,41 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute'])
+angular.module('myApp.view1', ['ui.router'])
 
-.config(['$routeProvider', 'uiMask.ConfigProvider', function($routeProvider) {
-  $routeProvider.when('/view1', {
-    templateUrl: 'view1/view1.html',
+.config(['$stateProvider', function($stateProvider) {
+
+  $stateProvider.state({
+    name: 'step1',
+    url: '/',
+    templateUrl: 'views/step1.html',
     controller: 'View1Ctrl'
   });
 
 }])
 
-.controller('View1Ctrl', [ '$scope', '$http', '$log', '$window', function($scope, $http, $log, $window) {
+.controller('View1Ctrl', [ '$scope', 'Series', '$log', '$window', function($scope, Series, $log, $window) {
 
   $scope.regex = '^\\d+$'; // Validate numbers
-
-  $http.get('view1/series.json').then(function (res) {
-    /**
-     * First init app
-     */
-    if( !localStorage.getItem( 'series' ) ){
-      $scope.series = res.data;
-      $scope.gutter = 3;
-
-      $scope.layout = {"walls": "rectangular", "flor": "rectangular"};
-
-    } else {
-      /**
-       * if field touched and localStorage have series object
-       */
-      $scope.series = JSON.parse( localStorage.getItem( 'series' ) );
-
-      $log.log($scope.series, 25);
-      $scope.id_series = $scope.series.id_series;
-      $scope.tilesUse = {
-        "walls": $scope.series.tilesUse.walls,
-        "flor": $scope.series.tilesUse.flor
-      };
-      $scope.gutter = $scope.series.gutter;
-      $scope.layout = {
-        "walls": $scope.series.layout.walls || "rectangular",
-        "flor": $scope.series.layout.flor || "rectangular"
-      };
-      $scope.tiles = {
-        "walls": $scope.series.tiles.walls || {"height": "", "fields": [{},{}]},
-        "flor": $scope.series.tiles.flor
-      };
-    }
-
-  });
+  /**
+   *
+   * @param obj
+   */
+  $scope.formData = function (obj) {
+    $scope.id_series = obj.id_series;
+    $scope.tilesUse = {
+      "walls": obj.tilesUse.walls,
+      "flor": obj.tilesUse.flor
+    };
+    $scope.gutter = obj.gutter;
+    $scope.layout = {
+      "walls": obj.layout.walls || "rectangular",
+      "flor": obj.layout.flor || "rectangular"
+    };
+    $scope.tiles = {
+      "walls": obj.tiles.walls || {"height": "", "fields": [{},{}]},
+      "flor": obj.tiles.flor
+    };
+  };
   /**
    * Save State Form function. Trigger on some events
    * @param event (string) event name what trigger this function
@@ -90,25 +78,44 @@ angular.module('myApp.view1', ['ngRoute'])
     localStorage.setItem( 'series', JSON.stringify( series ) );
   };
 
+    /**
+     * First init app
+     */
+    if( !localStorage.getItem( 'series' ) && angular.isUndefined( $scope.id_series ) ){
+      $scope.series = Series.get();
+      $scope.gutter = 3;
+
+      $scope.layout = {"walls": "rectangular", "flor": "rectangular"};
+
+    } else {
+      /**
+       * if field touched and localStorage have series object
+       */
+      $scope.series = JSON.parse( localStorage.getItem( 'series' ) );
+      $scope.formData($scope.series);
+
+    }
+
 
   /**
    * When click on next step button or some step button link on nav
    */
   $scope.$on('$destroy', function () {
-    $scope.saveSeriesState('destroy');
+    if( !angular.isUndefined( $scope.id_series ) )
+      $scope.saveSeriesState('destroy');
   });
 
   /**
    * This event trigger saveSeriesState when page: [reload, close,]
    * @param e (object) optional
    */
-  window.onunload = function (e) {
-      if( localStorage.getItem('saveStateEvent') != 'restart' ) {
-          $scope.saveSeriesState('onunload');
-      } else {
-        localStorage.clear();
-      }
-
+  window.onunload = function ( e ) {
+    if( !angular.isUndefined( $scope.id_series ) && localStorage.getItem('saveStateEvent') != 'restart' ){
+      $scope.saveSeriesState('unload');
+    } else {
+      $scope.id_series = null;
+      localStorage.clear();
+    }
   };
 
   /**
@@ -145,7 +152,9 @@ angular.module('myApp.view1', ['ngRoute'])
         }
         break;
       case 2:
+        $log.log(series);
         $scope.tilesUse = {"walls": false, "flor": true};
+        $scope.tiles = {};
         break;
     }
 
@@ -153,6 +162,9 @@ angular.module('myApp.view1', ['ngRoute'])
   /**
    * Adding walls fields
    */
+  $scope.$on('restart', function (event, data) {
+    $log.log(event, data);
+  });
   $scope.popWall = function () {
     $scope.tiles.walls.fields.pop();
   };
